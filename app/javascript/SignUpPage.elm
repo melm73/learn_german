@@ -18,7 +18,9 @@ type alias Flags =
 
 
 type alias Urls =
-    { createUserUrl : String }
+    { createUserUrl : String
+    , csrfToken : String
+    }
 
 
 type Msg
@@ -133,7 +135,7 @@ postUser : Model -> Cmd Msg
 postUser model =
     Http.request
         { method = "POST"
-        , headers = []
+        , headers = [ Http.header "X-CSRF-Token" model.urls.csrfToken ]
         , url = model.urls.createUserUrl
         , body = Http.jsonBody (postEncoder model)
         , expect = Http.expectWhatever HandleResponse
