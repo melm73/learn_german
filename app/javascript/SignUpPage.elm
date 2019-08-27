@@ -1,11 +1,14 @@
 module Main exposing (..)
 
 import Browser
+import Browser.Navigation exposing (load)
+import Debug
 import Html exposing (Html, button, div, form, h1, input, label, small, text)
 import Html.Attributes exposing (class, for, id, required, type_, value)
 import Html.Attributes.Aria exposing (ariaDescribedby)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (request)
+import Json.Decode as Decoder
 import Json.Encode as Encode
 
 
@@ -29,7 +32,7 @@ type Msg
     | SetPassword String
     | SetPasswordConfirmation String
     | SubmitForm
-    | HandleResponse (Result Http.Error ())
+    | HandleResponse (Result ErrorDetailed String)
 
 
 type FormField
@@ -37,6 +40,14 @@ type FormField
     | Email
     | Password
     | PasswordConfirmation
+
+
+type ErrorDetailed
+    = BadUrl String
+    | Timeout
+    | NetworkError
+    | BadStatus String
+    | BadBody String
 
 
 
@@ -127,6 +138,21 @@ update msg model =
         SubmitForm ->
             ( model, postUser model )
 
+        HandleResponse (Ok result) ->
+            let
+                decodedUrl =
+                    Decoder.decodeString (Decoder.field "redirectTo" Decoder.string) result
+
+                redirectUrl =
+                    case decodedUrl of
+                        Ok url ->
+                            url
+
+                        Err _ ->
+                            ""
+            in
+            ( model, load redirectUrl )
+
         HandleResponse _ ->
             ( model, Cmd.none )
 
@@ -138,7 +164,7 @@ postUser model =
         , headers = [ Http.header "X-CSRF-Token" model.urls.csrfToken ]
         , url = model.urls.createUserUrl
         , body = Http.jsonBody (postEncoder model)
-        , expect = Http.expectWhatever HandleResponse
+        , expect = expectStringDetailed HandleResponse
         , timeout = Nothing
         , tracker = Nothing
         }
@@ -157,6 +183,34 @@ userEncoder model =
         , ( "email", Encode.string model.email )
         , ( "password", Encode.string model.password )
         ]
+
+
+decoder =
+    Decoder.field "redirectTo" Decoder.string
+
+
+convertResponseString : Http.Response String -> Result ErrorDetailed String
+convertResponseString httpResponse =
+    case httpResponse of
+        Http.BadUrl_ url ->
+            Err (BadUrl url)
+
+        Http.Timeout_ ->
+            Err Timeout
+
+        Http.NetworkError_ ->
+            Err NetworkError
+
+        Http.BadStatus_ metadata body ->
+            Err (BadStatus body)
+
+        Http.GoodStatus_ metadata body ->
+            Ok body
+
+
+expectStringDetailed : (Result ErrorDetailed String -> msg) -> Http.Expect msg
+expectStringDetailed msg =
+    Http.expectStringResponse msg convertResponseString
 
 
 
