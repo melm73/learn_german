@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   flags['urls']['csrfToken'] = csrfToken;
 
   document.body.appendChild(target)
-  Elm.Main.init({
+  Elm.SignUpPage.init({
     node: target,
     flags: flags
   })

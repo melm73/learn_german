@@ -1,4 +1,4 @@
-module Main exposing (..)
+module SignUpPage exposing (..)
 
 import Browser
 import Browser.Navigation exposing (load)
@@ -32,7 +32,7 @@ type Msg
     | SetPassword String
     | SetPasswordConfirmation String
     | SubmitForm
-    | HandleResponse (Result ErrorDetailed String)
+    | HandleResponse (Result ErrorDetailed ( Int, String ))
 
 
 type FormField
@@ -46,8 +46,8 @@ type ErrorDetailed
     = BadUrl String
     | Timeout
     | NetworkError
-    | BadStatus String
-    | BadBody String
+    | BadStatus Int String
+    | BadBody Int String
 
 
 
@@ -138,7 +138,7 @@ update msg model =
         SubmitForm ->
             ( model, postUser model )
 
-        HandleResponse (Ok result) ->
+        HandleResponse (Ok ( _, result )) ->
             let
                 decodedUrl =
                     Decoder.decodeString (Decoder.field "redirectTo" Decoder.string) result
@@ -152,6 +152,13 @@ update msg model =
                             ""
             in
             ( model, load redirectUrl )
+
+        HandleResponse (Err (BadStatus 422 json)) ->
+            let
+                _ =
+                    Debug.log "json" json
+            in
+            ( model, Cmd.none )
 
         HandleResponse _ ->
             ( model, Cmd.none )
@@ -189,7 +196,7 @@ decoder =
     Decoder.field "redirectTo" Decoder.string
 
 
-convertResponseString : Http.Response String -> Result ErrorDetailed String
+convertResponseString : Http.Response String -> Result ErrorDetailed ( Int, String )
 convertResponseString httpResponse =
     case httpResponse of
         Http.BadUrl_ url ->
@@ -202,13 +209,13 @@ convertResponseString httpResponse =
             Err NetworkError
 
         Http.BadStatus_ metadata body ->
-            Err (BadStatus body)
+            Err (BadStatus metadata.statusCode body)
 
         Http.GoodStatus_ metadata body ->
-            Ok body
+            Ok ( metadata.statusCode, body )
 
 
-expectStringDetailed : (Result ErrorDetailed String -> msg) -> Http.Expect msg
+expectStringDetailed : (Result ErrorDetailed ( Int, String ) -> msg) -> Http.Expect msg
 expectStringDetailed msg =
     Http.expectStringResponse msg convertResponseString
 
