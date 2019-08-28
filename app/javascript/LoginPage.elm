@@ -22,32 +22,21 @@ type alias Flags =
 
 type alias Urls =
     { signUpUrl : String
+    , loginUrl : String
     , csrfToken : String
     }
 
 
 type Msg
-    = SetName String
-    | SetEmail String
+    = SetEmail String
     | SetPassword String
-    | SetPasswordConfirmation String
     | SubmitForm
-    | HandleResponse (Result ErrorDetailed ( Int, String ))
+    | HandleResponse (Result Http.Error String)
 
 
 type FormField
-    = Name
-    | Email
+    = Email
     | Password
-    | PasswordConfirmation
-
-
-type ErrorDetailed
-    = BadUrl String
-    | Timeout
-    | NetworkError
-    | BadStatus Int String
-    | BadBody Int String
 
 
 
@@ -55,10 +44,9 @@ type ErrorDetailed
 
 
 type alias Model =
-    { name : String
-    , email : String
+    { email : String
     , password : String
-    , passwordConfirmation : String
+    , errorMessage : Maybe String
     , urls : Urls
     }
 
@@ -69,10 +57,9 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { name = ""
-      , email = ""
+    ( { email = ""
       , password = ""
-      , passwordConfirmation = ""
+      , errorMessage = Nothing
       , urls = flags.urls
       }
     , Cmd.none
@@ -99,6 +86,7 @@ view model =
                             [ label [ for "inputPassword" ] [ text "Password" ]
                             , input [ type_ "password", class "form-control", id "inputPassword", value model.password, required True, onInput SetPassword ] []
                             ]
+                        , errorView model
                         ]
                     ]
                 , div [ class "card-footer" ]
@@ -110,6 +98,16 @@ view model =
         ]
 
 
+errorView : Model -> Html Msg
+errorView model =
+    case model.errorMessage of
+        Nothing ->
+            text ""
+
+        Just errorMessage ->
+            small [ class "text-danger" ] [ text errorMessage ]
+
+
 
 -- UPDATE
 
@@ -117,101 +115,51 @@ view model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case Debug.log "msg" msg of
-        SetName name ->
-            ( { model | name = name }, Cmd.none )
-
         SetEmail email ->
             ( { model | email = email }, Cmd.none )
 
         SetPassword password ->
             ( { model | password = password }, Cmd.none )
 
-        SetPasswordConfirmation passwordConfirmation ->
-            ( { model | passwordConfirmation = passwordConfirmation }, Cmd.none )
-
         SubmitForm ->
-            ( model, postUser model )
+            ( model, login model )
 
-        HandleResponse (Ok ( _, result )) ->
-            let
-                decodedUrl =
-                    Decoder.decodeString (Decoder.field "redirectTo" Decoder.string) result
-
-                redirectUrl =
-                    case decodedUrl of
-                        Ok url ->
-                            url
-
-                        Err _ ->
-                            ""
-            in
+        HandleResponse (Ok redirectUrl) ->
             ( model, load redirectUrl )
 
-        HandleResponse (Err (BadStatus 422 json)) ->
-            let
-                _ =
-                    Debug.log "json" json
-            in
-            ( model, Cmd.none )
-
-        HandleResponse _ ->
-            ( model, Cmd.none )
+        HandleResponse (Err _) ->
+            ( { model | errorMessage = Just "Invalid username/password" }, Cmd.none )
 
 
-postUser : Model -> Cmd Msg
-postUser model =
+login : Model -> Cmd Msg
+login model =
     Http.request
         { method = "POST"
         , headers = [ Http.header "X-CSRF-Token" model.urls.csrfToken ]
-        , url = model.urls.signUpUrl
-        , body = Http.jsonBody (postEncoder model)
-        , expect = expectStringDetailed HandleResponse
+        , url = model.urls.loginUrl
+        , body = Http.jsonBody (loginEncoder model)
+        , expect = Http.expectJson HandleResponse redirectDecoder
         , timeout = Nothing
         , tracker = Nothing
         }
 
 
-postEncoder : Model -> Encode.Value
-postEncoder model =
+loginEncoder : Model -> Encode.Value
+loginEncoder model =
     Encode.object
-        [ ( "user", userEncoder model ) ]
+        [ ( "session", sessionEncoder model ) ]
 
 
-userEncoder : Model -> Encode.Value
-userEncoder model =
+sessionEncoder : Model -> Encode.Value
+sessionEncoder model =
     Encode.object
-        [ ( "name", Encode.string model.name )
-        , ( "email", Encode.string model.email )
+        [ ( "email", Encode.string model.email )
         , ( "password", Encode.string model.password )
         ]
 
 
-decoder =
+redirectDecoder =
     Decoder.field "redirectTo" Decoder.string
-
-
-convertResponseString : Http.Response String -> Result ErrorDetailed ( Int, String )
-convertResponseString httpResponse =
-    case httpResponse of
-        Http.BadUrl_ url ->
-            Err (BadUrl url)
-
-        Http.Timeout_ ->
-            Err Timeout
-
-        Http.NetworkError_ ->
-            Err NetworkError
-
-        Http.BadStatus_ metadata body ->
-            Err (BadStatus metadata.statusCode body)
-
-        Http.GoodStatus_ metadata body ->
-            Ok ( metadata.statusCode, body )
-
-
-expectStringDetailed : (Result ErrorDetailed ( Int, String ) -> msg) -> Http.Expect msg
-expectStringDetailed msg =
-    Http.expectStringResponse msg convertResponseString
 
 
 
