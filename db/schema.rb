@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2019_08_26_022026) do
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: uuid, force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.string "password_digest"
