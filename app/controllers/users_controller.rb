@@ -4,19 +4,18 @@ class UsersController < ApplicationController
      render :index, layout: 'elm'
   end
 
-
   def create
-    @user = User.new(user_params)
-    if @user.save
+    user = User.new(user_params)
+
+    if user.save
+      login(user)
       render json: { redirectTo: root_path }, status: :created
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: user.errors, status: :unprocessable_entity
     end
   end
 
   def new
-    @user = User.new
-
     @signup_page_props = {
       urls: {
         createUserUrl: users_path

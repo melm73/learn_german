@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:session][:email].downcase)
 
     if user && user.authenticate(params[:session][:password])
-      # session[:current_user_id] = user.id
+      log_in(user)
       render json: { redirectTo: root_path }, status: :created
     else
       render json: {}, status: :forbidden
@@ -23,5 +23,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    log_out
+    render json: { redirectTo: root_path }, status: :ok
   end
 end
