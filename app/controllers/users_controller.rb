@@ -1,15 +1,10 @@
 class UsersController < ApplicationController
-
-  def index
-     render :index, layout: 'elm'
-  end
-
   def create
     user = User.new(user_params)
 
     if user.save
-      login(user)
-      render json: { redirectTo: root_path }, status: :created
+      log_in(user)
+      render json: { redirectTo: profile_path(id: user.id) }, status: :created
     else
       render json: user.errors, status: :unprocessable_entity
     end
@@ -23,6 +18,19 @@ class UsersController < ApplicationController
     }
 
     render :new
+  end
+
+  def show
+    if logged_in?
+      @menu_props = {
+        user: { name: current_user.name },
+        urls: { logoutUrl: logout_path }
+      }
+
+      render :show
+    else
+      redirect_to login_path
+    end
   end
 
   private

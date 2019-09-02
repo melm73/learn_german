@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
 
     if user && user.authenticate(params[:session][:password])
       log_in(user)
-      render json: { redirectTo: root_path }, status: :created
+      render json: { redirectTo: profile_path(id: user.id) }, status: :created
     else
       render json: {}, status: :forbidden
     end
@@ -24,6 +24,6 @@ class SessionsController < ApplicationController
 
   def destroy
     log_out
-    render json: { redirectTo: root_path }, status: :ok
+    render json: { redirectTo: login_path }, status: :ok
   end
 end
