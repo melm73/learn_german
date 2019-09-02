@@ -1,21 +1,20 @@
 default: &default
   encoding: unicode
+  adapter: postgresql
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
-  adapter: sqlite3
-  database: db/german-vocab-development.sqlite3
+  <<: *default
+  database: learn_german_development
 
 test:
   <<: *default
-  adapter: sqlite3
-  database: db/german-vocab-test.sqlite3
+  database: learn_german_test
 
 production:
   <<: *default
-  adapter: postgresql
   database: learn_german_production
   username: learn_german
   password: <%= ENV['LEARN_GERMAN_DATABASE_PASSWORD'] %>
