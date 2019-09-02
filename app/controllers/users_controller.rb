@@ -27,6 +27,14 @@ class UsersController < ApplicationController
         urls: { logoutUrl: logout_path }
       }
 
+      @user_props = {
+        user: {
+          name: current_user.name,
+          email: current_user.email,
+        },
+        urls: { updateUserUrl: users_path}
+      }
+
       render :show
     else
       redirect_to login_path

@@ -1,7 +1,5 @@
 <%= content_tag :div, nil, id: "menu_props", data: { props: @menu_props } %>
 <%= javascript_pack_tag "menu" %>
 
-<h2>users#show/h2>
-<p>
-  The time is now: <%= Time.now %>
-</p>
+<%= content_tag :div, nil, id: "user_props", data: { props: @user_props } %>
+<%= javascript_pack_tag "profile" %>

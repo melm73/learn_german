@@ -1,0 +1,35 @@
+  
+.card-header {
+  background-color: #3d1860;
+  border-color: #643579;
+  color: white;
+}
+
+.card-footer button {
+  background-color: #643579;
+  border-color: #643579;
+}
+
+.card-footer button:hover {
+  background-color: #3d1860;
+  border-color: #3d1860;
+}
+
+.row .card .card-footer button:active {
+  background-color: #3d1860;
+  border-color: #3d1860;
+}
+
+.card-footer button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.card-footer button:disabled {
+  background-color: #bb99cd;
+  border-color: #bb99cd;
+}
+
+.card-footer small {
+  padding-left: 10px;
+}

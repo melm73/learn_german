@@ -46,7 +46,7 @@ init model =
 
 view : Model -> Html Msg
 view model =
-    nav [ class "navbar navbar-expand-lg navbar-light bg-light justify-content-between" ]
+    nav [ class "navbar navbar-expand-lg navbar-light bg-light justify-content-between mb-3" ]
         [ img [ class "navbar-brand", src "/favicon.ico" ] []
         , button
             [ class "navbar-toggler"
