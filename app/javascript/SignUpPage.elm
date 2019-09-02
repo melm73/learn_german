@@ -141,7 +141,7 @@ update msg model =
         HandleResponse (Ok ( _, result )) ->
             let
                 decodedUrl =
-                    Decoder.decodeString (Decoder.field "redirectTo" Decoder.string) result
+                    Decoder.decodeString decoder result
 
                 redirectUrl =
                     case decodedUrl of
