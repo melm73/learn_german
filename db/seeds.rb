@@ -1,7 +1,13 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+require 'csv'
+
+CSV.read("db/words.csv", headers: true, header_converters: :symbol).each do |word|
+  found = Word.find_by(german: word[:german])
+  next if found
+
+  Word.create(
+    german: word[:german], 
+    article: word[:article], 
+    plural: word[:plural], 
+    category: word[:category]
+  )
+end
