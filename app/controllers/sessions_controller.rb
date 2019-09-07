@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
 
     if user && user.authenticate(params[:session][:password])
       log_in(user)
-      render json: { redirectTo: profile_path(id: user.id) }, status: :created
+      render json: { redirectTo: progress_index_path }, status: :created
     else
       render json: {}, status: :forbidden
     end

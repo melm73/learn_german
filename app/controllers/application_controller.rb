@@ -18,4 +18,11 @@ class ApplicationController < ActionController::Base
     session.delete(:user_id)
     @current_user = nil
   end
+
+  def menu_props
+    @menu_props = {
+        user: { name: current_user.name },
+        urls: { logoutUrl: logout_path }
+    }
+  end
 end
