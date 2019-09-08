@@ -33,3 +33,20 @@
 .card-footer small {
   padding-left: 10px;
 }
+
+.dot {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 2px;
+}
+
+.dot.hollow {
+  border: 1px solid #bb99cd;
+}
+
+.dot.filled {
+  background-color: #bb99cd;
+}
+
