@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root 'welcome#index'
   
   get  '/signup',  to: 'users#new'
-  get '/profile/:id', as: 'profile', to: 'users#show'
+  get '/profile', as: 'profile', to: 'users#show'
 
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'

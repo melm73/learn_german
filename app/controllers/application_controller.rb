@@ -19,10 +19,15 @@ class ApplicationController < ActionController::Base
     @current_user = nil
   end
 
-  def menu_props
+  def menu_props(current_page:)
     @menu_props = {
         user: { name: current_user.name },
-        urls: { logoutUrl: logout_path }
+        currentPage: current_page,
+        urls: { 
+          logoutUrl: logout_path,
+          profileUrl: profile_path,
+          progressUrl: progress_index_path
+        }
     }
   end
 end

@@ -1,6 +1,6 @@
 class ProgressController < ApplicationController
   def index
-    menu_props
+    menu_props(current_page: 'progress')
     @progress_props = {
       urls: {}
     }

@@ -3,7 +3,7 @@ module Menu exposing (..)
 import Browser
 import Browser.Navigation exposing (load)
 import Html exposing (Html, a, button, div, h1, img, li, nav, span, text, ul)
-import Html.Attributes exposing (attribute, class, href, id, src, type_)
+import Html.Attributes exposing (attribute, class, classList, href, id, src, type_)
 import Html.Events exposing (onClick)
 import Http exposing (request)
 import Json.Decode as Decoder
@@ -16,6 +16,7 @@ import Json.Encode as Encode
 
 type alias Model =
     { user : User
+    , currentPage : String
     , urls : Urls
     }
 
@@ -27,6 +28,8 @@ type alias User =
 
 type alias Urls =
     { logoutUrl : String
+    , profileUrl : String
+    , progressUrl : String
     , csrfToken : String
     }
 
@@ -46,6 +49,13 @@ init model =
 
 view : Model -> Html Msg
 view model =
+    let
+        progressPage =
+            "progress"
+
+        reviewPage =
+            "review"
+    in
     nav [ class "navbar navbar-expand-lg navbar-light bg-light justify-content-between mb-3" ]
         [ img [ class "navbar-brand", src "/favicon.ico" ] []
         , button
@@ -60,9 +70,10 @@ view model =
             [ span [ class "navbar-toggler-icon" ] [] ]
         , div [ class "collapse navbar-collapse", id "navbarSupportedContent" ]
             [ ul [ class "navbar-nav mr-auto" ]
-                [ li [ class "nav-item active" ] [ a [ class "nav-link", href "" ] [ text "Home" ] ]
-                , li [ class "nav-item active" ] [ a [ class "nav-link", href "" ] [ text "Progress" ] ]
-                , li [ class "nav-item" ] [ a [ class "nav-link", href "" ] [ text "Review" ] ]
+                [ li [ classList [ ( "nav-item", True ), ( "active", model.currentPage == progressPage ) ] ]
+                    [ a [ class "nav-link", href "/progress" ] [ text "Progress" ] ]
+                , li [ classList [ ( "nav-item", True ), ( "active", model.currentPage == reviewPage ) ] ]
+                    [ a [ class "nav-link", href "" ] [ text "Review" ] ]
                 ]
             , ul [ class "navbar-nav" ]
                 [ li [ class "nav-item dropdown" ]
@@ -77,6 +88,7 @@ view model =
                         [ text model.user.name ]
                     , div [ class "dropdown-menu dropdown-menu-right", attribute "aria-labelledby" "#navbarDropdownMenuLink" ]
                         [ button [ class "dropdown-item", onClick Logout ] [ text "logout" ]
+                        , a [ class "dropdown-item", href "/profile" ] [ text "my profile" ]
                         ]
                     ]
                 ]

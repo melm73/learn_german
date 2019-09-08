@@ -22,7 +22,7 @@ class UsersController < ApplicationController
 
   def show
     if logged_in?
-      menu_props
+      menu_props(current_page: 'profile')
 
       @user_props = {
         user: {
