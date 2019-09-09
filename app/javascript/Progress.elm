@@ -2,6 +2,7 @@ module Progress exposing (..)
 
 import Array
 import Browser
+import Browser.Navigation exposing (load)
 import Functions exposing (fullWord)
 import Html exposing (Html, button, div, form, h1, input, span, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, placeholder, scope, style, type_, value)
@@ -33,12 +34,13 @@ type alias Filter =
 
 
 type alias Urls =
-    { csrfToken : String
+    { editTransactionUrl : String
+    , csrfToken : String
     }
 
 
 type alias Progress =
-    { id : String
+    { wordId : String
     , german : String
     , article : Maybe String
     , sentence : Maybe String
@@ -97,7 +99,7 @@ view model =
 
 rowView : Progress -> Html Msg
 rowView progress =
-    tr []
+    tr [ onClick (ProgressClicked progress.wordId) ]
         [ td []
             [ div [ class "lead" ] [ text (fullWord progress.article progress.german) ]
             , div [ class "text-muted" ] [ text (Maybe.withDefault "" progress.sentence) ]
@@ -162,6 +164,7 @@ searchView model =
 type Msg
     = SearchStringChanged String
     | ClearSearchText
+    | ProgressClicked String
 
 
 
@@ -211,6 +214,9 @@ update message model =
                     }
             in
             ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
+
+        ProgressClicked wordId ->
+            ( model, load (model.urls.editTransactionUrl ++ "?word_id=" ++ wordId) )
 
 
 

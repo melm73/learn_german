@@ -3,7 +3,9 @@ class ProgressController < ApplicationController
     menu_props(current_page: 'progress')
     @progress_props = {
       progresses: generate_progresses,
-      urls: {}
+      urls: {
+        editTransactionUrl: translation_path
+      }
     }
 
     render :index
@@ -14,7 +16,7 @@ class ProgressController < ApplicationController
   def generate_progresses
     Word.all.map do |word|
       {
-        id: word.id,
+        wordId: word.id,
         german: word.german,
         article: word.article,
         sentence: nil,
