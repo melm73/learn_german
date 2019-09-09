@@ -2,6 +2,7 @@ module Progress exposing (..)
 
 import Array
 import Browser
+import Functions exposing (fullWord)
 import Html exposing (Html, button, div, form, h1, input, span, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, placeholder, scope, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -152,20 +153,6 @@ searchView model =
             , span [ class "form-clear", onClick ClearSearchText ] [ text (String.fromChar crossChar) ]
             ]
         ]
-
-
-
--- FUNCTIONS
-
-
-fullWord : Maybe String -> String -> String
-fullWord maybeArticle word =
-    case maybeArticle of
-        Nothing ->
-            word
-
-        Just article ->
-            article ++ " " ++ word
 
 
 
