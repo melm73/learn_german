@@ -17,16 +17,14 @@ ActiveRecord::Schema.define(version: 2019_09_07_121531) do
   enable_extension "plpgsql"
 
   create_table "translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "word_id"
+    t.uuid "user_id"
+    t.uuid "word_id"
     t.string "translation"
     t.text "sentence"
     t.boolean "known"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id", "word_id"], name: "index_translations_on_user_id_and_word_id", unique: true
-    t.index ["user_id"], name: "index_translations_on_user_id"
-    t.index ["word_id"], name: "index_translations_on_word_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

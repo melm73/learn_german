@@ -1,8 +1,8 @@
 class CreateTranslations < ActiveRecord::Migration[6.0]
   def change
     create_table :translations, id: :uuid do |t|
-      t.references :user
-      t.references :word
+      t.uuid :user_id
+      t.uuid :word_id
       t.string :translation
       t.text :sentence
       t.boolean :known
