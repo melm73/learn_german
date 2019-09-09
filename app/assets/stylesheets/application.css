@@ -50,3 +50,29 @@
   background-color: #bb99cd;
 }
 
+.search-form {
+  text-align: right;
+  vertical-align: middle;
+}
+
+.search-form button {
+  margin-left: 10px;
+}
+
+.search-input {
+  display: flex;
+
+}
+.form-clear {
+  align-items: center;
+  bottom: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(0, 0, 0, .54);
+  position: absolute;
+  right: 10px;
+  z-index: 10;
+  justify-content: center;
+  display: flex;
+}

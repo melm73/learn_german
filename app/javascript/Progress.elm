@@ -1,16 +1,38 @@
 module Progress exposing (..)
 
+import Array
 import Browser
-import Html exposing (Html, div, h1, span, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, scope, style)
+import Html exposing (Html, button, div, form, h1, input, span, table, tbody, td, text, th, thead, tr)
+import Html.Attributes exposing (class, placeholder, scope, style, type_, value)
+import Html.Events exposing (onClick, onInput)
 
 
 
 -- MODEL
 
 
-type alias Model =
+type alias Flags =
     { progresses : List Progress
+    , urls : Urls
+    }
+
+
+type alias Model =
+    { allProgresses : List Progress
+    , viewProgresses : List Progress
+    , filter : Filter
+    , urls : Urls
+    }
+
+
+type alias Filter =
+    { pageNo : Int
+    , searchText : String
+    }
+
+
+type alias Urls =
+    { csrfToken : String
     }
 
 
@@ -30,9 +52,15 @@ type alias Progress =
 -- INIT
 
 
-init : Model -> ( Model, Cmd Msg )
-init model =
-    ( model, Cmd.none )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( { allProgresses = flags.progresses
+      , viewProgresses = viewProgresses "" 0 flags.progresses
+      , filter = { pageNo = 0, searchText = "" }
+      , urls = flags.urls
+      }
+    , Cmd.none
+    )
 
 
 
@@ -47,7 +75,7 @@ view model =
                 [ div [ class "col-sm-4" ]
                     [ h1 [] [ text "Progress" ]
                     ]
-                , div [ class "col-sm-8" ] [ text "word search here" ]
+                , div [ class "col-sm-8" ] [ searchView model ]
                 ]
             , text "page nav"
             , table [ class "table table-hover" ]
@@ -60,7 +88,7 @@ view model =
                         , th [ scope "col", class "text-center" ] [ text "LEARNT" ]
                         ]
                     ]
-                , tbody [] (List.map rowView model.progresses)
+                , tbody [] (List.map rowView model.viewProgresses)
                 ]
             ]
         ]
@@ -89,8 +117,8 @@ levelView level =
         )
 
 
-noBreakSpace : Char
-noBreakSpace =
+tickMark : Char
+tickMark =
     '✓'
 
 
@@ -101,7 +129,33 @@ learntView learnt =
             text ""
 
         True ->
-            text (String.fromChar noBreakSpace)
+            text (String.fromChar tickMark)
+
+
+crossChar : Char
+crossChar =
+    '✕'
+
+
+searchView : Model -> Html Msg
+searchView model =
+    form [ class "search-form form-inline float-lg-right" ]
+        [ div [ class "form-group position-relative" ]
+            [ input
+                [ type_ "text"
+                , class "form-control"
+                , placeholder "search..."
+                , value model.filter.searchText
+                , onInput SearchStringChanged
+                ]
+                []
+            , span [ class "form-clear", onClick ClearSearchText ] [ text (String.fromChar crossChar) ]
+            ]
+        ]
+
+
+
+-- FUNCTIONS
 
 
 fullWord : Maybe String -> String -> String
@@ -119,16 +173,57 @@ fullWord maybeArticle word =
 
 
 type Msg
-    = None
+    = SearchStringChanged String
+    | ClearSearchText
 
 
 
 -- UPDATE
 
 
+viewProgresses : String -> Int -> List Progress -> List Progress
+viewProgresses searchText pageNo progresses =
+    let
+        progressesPerPage =
+            5
+
+        filteredProgresses =
+            case searchText of
+                "" ->
+                    Array.fromList progresses
+
+                searchString ->
+                    Array.fromList (List.filter (\p -> String.contains searchString p.german) progresses)
+    in
+    Array.toList (Array.slice (pageNo * progressesPerPage) progressesPerPage filteredProgresses)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    ( model, Cmd.none )
+    case message of
+        SearchStringChanged searchText ->
+            let
+                newProgresses =
+                    viewProgresses searchText 0 model.allProgresses
+
+                newFilter =
+                    { searchText = searchText
+                    , pageNo = 0
+                    }
+            in
+            ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
+
+        ClearSearchText ->
+            let
+                newProgresses =
+                    viewProgresses "" 0 model.allProgresses
+
+                newFilter =
+                    { searchText = ""
+                    , pageNo = 0
+                    }
+            in
+            ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
 
 
 
@@ -144,7 +239,7 @@ subscriptions model =
 -- MAIN
 
 
-main : Program Model Model Msg
+main : Program Flags Model Msg
 main =
     Browser.element
         { init = init
