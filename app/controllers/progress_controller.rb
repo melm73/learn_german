@@ -21,6 +21,7 @@ class ProgressController < ApplicationController
         wordId: word.id,
         german: word.german,
         article: word.article,
+        translated: translation.present?,
         sentence: translation&.sentence,
         level: 0,
         timesReviewed: 0,

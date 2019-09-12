@@ -4,8 +4,8 @@ import Array
 import Browser
 import Browser.Navigation exposing (load)
 import Functions exposing (fullWord)
-import Html exposing (Html, button, div, form, h1, input, span, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, placeholder, scope, style, type_, value)
+import Html exposing (Html, button, div, form, h1, input, label, option, select, span, table, tbody, td, text, th, thead, tr)
+import Html.Attributes exposing (attribute, class, placeholder, scope, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 
@@ -30,6 +30,7 @@ type alias Model =
 type alias Filter =
     { pageNo : Int
     , searchText : String
+    , translated : TranslatedOption
     }
 
 
@@ -43,12 +44,19 @@ type alias Progress =
     { wordId : String
     , german : String
     , article : Maybe String
+    , translated : Bool
     , sentence : Maybe String
     , level : Int
     , timesReviewed : Int
     , lastReview : Maybe String
     , learnt : Bool
     }
+
+
+type TranslatedOption
+    = Any
+    | No
+    | Yes
 
 
 
@@ -58,12 +66,20 @@ type alias Progress =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { allProgresses = flags.progresses
-      , viewProgresses = viewProgresses "" 0 flags.progresses
-      , filter = { pageNo = 0, searchText = "" }
+      , viewProgresses = viewProgresses defaultFilter flags.progresses
+      , filter = defaultFilter
       , urls = flags.urls
       }
     , Cmd.none
     )
+
+
+defaultFilter : Filter
+defaultFilter =
+    { pageNo = 0
+    , searchText = ""
+    , translated = Yes
+    }
 
 
 
@@ -143,7 +159,15 @@ crossChar =
 searchView : Model -> Html Msg
 searchView model =
     form [ class "search-form form-inline float-lg-right" ]
-        [ div [ class "form-group position-relative" ]
+        [ div [ class "form-group pr-3" ]
+            [ label [ class "pr-2" ] [ text "Translated?" ]
+            , select [ class "form-control", onInput SelectTranslatedOption ]
+                [ option [ selected (model.filter.translated == Any), value "Any" ] [ text "Any" ]
+                , option [ selected (model.filter.translated == Yes), value "Yes" ] [ text "Yes" ]
+                , option [ selected (model.filter.translated == No), value "No" ] [ text "No" ]
+                ]
+            ]
+        , div [ class "form-group position-relative" ]
             [ input
                 [ type_ "text"
                 , class "form-control"
@@ -165,58 +189,103 @@ type Msg
     = SearchStringChanged String
     | ClearSearchText
     | ProgressClicked String
+    | SelectTranslatedOption String
 
 
 
 -- UPDATE
 
 
-viewProgresses : String -> Int -> List Progress -> List Progress
-viewProgresses searchText pageNo progresses =
+viewProgresses : Filter -> List Progress -> List Progress
+viewProgresses filter progresses =
     let
         progressesPerPage =
             20
 
+        translatedProgresses =
+            case filter.translated of
+                Any ->
+                    progresses
+
+                No ->
+                    List.filter (\p -> not p.translated) progresses
+
+                Yes ->
+                    List.filter (\p -> p.translated) progresses
+
         filteredProgresses =
-            case searchText of
+            case filter.searchText of
                 "" ->
-                    Array.fromList progresses
+                    Array.fromList translatedProgresses
 
                 searchString ->
-                    Array.fromList (List.filter (\p -> String.contains searchString p.german) progresses)
+                    Array.fromList (List.filter (\p -> String.contains searchString p.german) translatedProgresses)
     in
-    Array.toList (Array.slice (pageNo * progressesPerPage) progressesPerPage filteredProgresses)
+    Array.toList (Array.slice (filter.pageNo * progressesPerPage) progressesPerPage filteredProgresses)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
+    let
+        _ =
+            Debug.log "message" message
+    in
     case message of
         SearchStringChanged searchText ->
             let
-                newProgresses =
-                    viewProgresses searchText 0 model.allProgresses
-
                 newFilter =
                     { searchText = searchText
                     , pageNo = 0
+                    , translated = model.filter.translated
                     }
+
+                newProgresses =
+                    viewProgresses newFilter model.allProgresses
             in
             ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
 
         ClearSearchText ->
             let
-                newProgresses =
-                    viewProgresses "" 0 model.allProgresses
-
                 newFilter =
                     { searchText = ""
                     , pageNo = 0
+                    , translated = model.filter.translated
                     }
+
+                newProgresses =
+                    viewProgresses newFilter model.allProgresses
             in
             ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
 
         ProgressClicked wordId ->
             ( model, load (model.urls.editTransactionUrl ++ "?word_id=" ++ wordId) )
+
+        SelectTranslatedOption option ->
+            let
+                translatedOption =
+                    case option of
+                        "Any" ->
+                            Any
+
+                        "Yes" ->
+                            Yes
+
+                        "No" ->
+                            No
+
+                        _ ->
+                            Any
+
+                newFilter =
+                    { searchText = model.filter.searchText
+                    , pageNo = 0
+                    , translated = translatedOption
+                    }
+
+                newProgresses =
+                    viewProgresses newFilter model.allProgresses
+            in
+            ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
 
 
 
