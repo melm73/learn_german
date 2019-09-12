@@ -104,10 +104,10 @@ rowView progress =
             [ div [ class "lead" ] [ text (fullWord progress.article progress.german) ]
             , div [ class "text-muted" ] [ text (Maybe.withDefault "" progress.sentence) ]
             ]
-        , td [ class "text-center" ] [ levelView progress.level ]
-        , td [ class "text-center" ] [ text (String.fromInt progress.timesReviewed) ]
-        , td [ class "text-center" ] [ text (Maybe.withDefault "" progress.lastReview) ]
-        , td [ class "text-center" ] [ learntView progress.learnt ]
+        , td [ class "text-center align-middle" ] [ levelView progress.level ]
+        , td [ class "text-center align-middle" ] [ text (String.fromInt progress.timesReviewed) ]
+        , td [ class "text-center align-middle" ] [ text (Maybe.withDefault "" progress.lastReview) ]
+        , td [ class "text-center align-middle" ] [ learntView progress.learnt ]
         ]
 
 
@@ -175,7 +175,7 @@ viewProgresses : String -> Int -> List Progress -> List Progress
 viewProgresses searchText pageNo progresses =
     let
         progressesPerPage =
-            5
+            20
 
         filteredProgresses =
             case searchText of

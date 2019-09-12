@@ -15,16 +15,25 @@ class ProgressController < ApplicationController
 
   def generate_progresses
     Word.all.map do |word|
+      translation = translations_by_word[word.id]
+
       {
         wordId: word.id,
         german: word.german,
         article: word.article,
-        sentence: nil,
+        sentence: translation&.sentence,
         level: 0,
         timesReviewed: 0,
         lastReview: nil,
         learnt: false,
       }
     end
+  end
+
+  def translations_by_word
+    @translations_by_word ||= Hash[Translation
+      .where(user_id: current_user.id)
+      .to_a
+      .map { |translation| [translation.word_id, translation] }]
   end
 end
