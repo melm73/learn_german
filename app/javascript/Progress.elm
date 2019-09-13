@@ -4,8 +4,8 @@ import Array
 import Browser
 import Browser.Navigation exposing (load)
 import Functions exposing (fullWord)
-import Html exposing (Html, button, div, form, h1, input, label, option, select, span, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (attribute, class, placeholder, scope, selected, style, type_, value)
+import Html exposing (Html, button, div, form, h1, input, label, li, nav, option, select, span, table, tbody, td, text, th, thead, tr, ul)
+import Html.Attributes exposing (attribute, class, classList, placeholder, scope, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 
@@ -21,7 +21,7 @@ type alias Flags =
 
 type alias Model =
     { allProgresses : List Progress
-    , viewProgresses : List Progress
+    , filteredProgresses : List Progress
     , filter : Filter
     , urls : Urls
     }
@@ -59,6 +59,13 @@ type TranslatedOption
     | Yes
 
 
+type PaginationDirection
+    = First
+    | Previous
+    | Next
+    | Last
+
+
 
 -- INIT
 
@@ -66,7 +73,7 @@ type TranslatedOption
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { allProgresses = flags.progresses
-      , viewProgresses = viewProgresses defaultFilter flags.progresses
+      , filteredProgresses = filteredProgresses defaultFilter flags.progresses
       , filter = defaultFilter
       , urls = flags.urls
       }
@@ -76,7 +83,7 @@ init flags =
 
 defaultFilter : Filter
 defaultFilter =
-    { pageNo = 0
+    { pageNo = 1
     , searchText = ""
     , translated = Yes
     }
@@ -96,7 +103,7 @@ view model =
                     ]
                 , div [ class "col-sm-8" ] [ searchView model ]
                 ]
-            , text "page nav"
+            , paginationView model
             , table [ class "table table-hover" ]
                 [ thead [ class "thead-dark" ]
                     [ tr []
@@ -107,7 +114,7 @@ view model =
                         , th [ scope "col", class "text-center" ] [ text "LEARNT" ]
                         ]
                     ]
-                , tbody [] (List.map rowView model.viewProgresses)
+                , tbody [] (List.map rowView (viewProgresses model))
                 ]
             ]
         ]
@@ -181,6 +188,68 @@ searchView model =
         ]
 
 
+singleChevronLeft : Char
+singleChevronLeft =
+    '‹'
+
+
+doubleChevronLeft : Char
+doubleChevronLeft =
+    '«'
+
+
+singleChevronRight : Char
+singleChevronRight =
+    '›'
+
+
+doubleChevronRight : Char
+doubleChevronRight =
+    '»'
+
+
+paginationView : Model -> Html Msg
+paginationView model =
+    nav []
+        [ ul [ class "pagination" ]
+            [ paginationFirstView model
+            , paginationPreviousView model
+            , paginationPageView model
+            , paginationNextView model
+            , paginationLastView model
+            ]
+        ]
+
+
+paginationFirstView : Model -> Html Msg
+paginationFirstView model =
+    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == 1 ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked First) ] [ text (String.fromChar doubleChevronLeft) ] ]
+
+
+paginationPreviousView : Model -> Html Msg
+paginationPreviousView model =
+    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == 1 ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked Previous) ] [ text (String.fromChar singleChevronLeft) ] ]
+
+
+paginationPageView : Model -> Html Msg
+paginationPageView model =
+    li [ class "page-item disabled" ] [ button [ class "page-link" ] [ text ("Page " ++ String.fromInt model.filter.pageNo ++ " of " ++ String.fromInt (numberOfPages model)) ] ]
+
+
+paginationNextView : Model -> Html Msg
+paginationNextView model =
+    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == numberOfPages model ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked Next) ] [ text (String.fromChar singleChevronRight) ] ]
+
+
+paginationLastView : Model -> Html Msg
+paginationLastView model =
+    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == numberOfPages model ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked Last) ] [ text (String.fromChar doubleChevronRight) ] ]
+
+
 
 -- MESSAGE
 
@@ -190,18 +259,26 @@ type Msg
     | ClearSearchText
     | ProgressClicked String
     | SelectTranslatedOption String
+    | PaginationClicked PaginationDirection
 
 
 
 -- UPDATE
 
 
-viewProgresses : Filter -> List Progress -> List Progress
-viewProgresses filter progresses =
-    let
-        progressesPerPage =
-            20
+numberOfPages : Model -> Int
+numberOfPages model =
+    ceiling (toFloat (List.length model.filteredProgresses) / toFloat progressesPerPage)
 
+
+progressesPerPage : Int
+progressesPerPage =
+    20
+
+
+filteredProgresses : Filter -> List Progress -> List Progress
+filteredProgresses filter progresses =
+    let
         translatedProgresses =
             case filter.translated of
                 Any ->
@@ -212,16 +289,25 @@ viewProgresses filter progresses =
 
                 Yes ->
                     List.filter (\p -> p.translated) progresses
-
-        filteredProgresses =
-            case filter.searchText of
-                "" ->
-                    Array.fromList translatedProgresses
-
-                searchString ->
-                    Array.fromList (List.filter (\p -> String.contains searchString p.german) translatedProgresses)
     in
-    Array.toList (Array.slice (filter.pageNo * progressesPerPage) progressesPerPage filteredProgresses)
+    case filter.searchText of
+        "" ->
+            translatedProgresses
+
+        searchString ->
+            List.filter (\p -> String.contains searchString p.german) translatedProgresses
+
+
+viewProgresses : Model -> List Progress
+viewProgresses model =
+    let
+        sliceFrom =
+            (model.filter.pageNo - 1) * progressesPerPage
+
+        sliceTo =
+            model.filter.pageNo * progressesPerPage
+    in
+    Array.toList (Array.slice sliceFrom sliceTo (Array.fromList model.filteredProgresses))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -235,27 +321,27 @@ update message model =
             let
                 newFilter =
                     { searchText = searchText
-                    , pageNo = 0
+                    , pageNo = 1
                     , translated = model.filter.translated
                     }
 
                 newProgresses =
-                    viewProgresses newFilter model.allProgresses
+                    filteredProgresses newFilter model.allProgresses
             in
-            ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
+            ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
         ClearSearchText ->
             let
                 newFilter =
                     { searchText = ""
-                    , pageNo = 0
+                    , pageNo = 1
                     , translated = model.filter.translated
                     }
 
                 newProgresses =
-                    viewProgresses newFilter model.allProgresses
+                    filteredProgresses newFilter model.allProgresses
             in
-            ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
+            ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
         ProgressClicked wordId ->
             ( model, load (model.urls.editTransactionUrl ++ "?word_id=" ++ wordId) )
@@ -278,14 +364,41 @@ update message model =
 
                 newFilter =
                     { searchText = model.filter.searchText
-                    , pageNo = 0
+                    , pageNo = 1
                     , translated = translatedOption
                     }
 
                 newProgresses =
-                    viewProgresses newFilter model.allProgresses
+                    filteredProgresses newFilter model.allProgresses
             in
-            ( { model | filter = newFilter, viewProgresses = newProgresses }, Cmd.none )
+            ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
+
+        PaginationClicked direction ->
+            let
+                newPageNo =
+                    case direction of
+                        First ->
+                            1
+
+                        Previous ->
+                            model.filter.pageNo - 1
+
+                        Next ->
+                            model.filter.pageNo + 1
+
+                        Last ->
+                            numberOfPages model
+
+                newFilter =
+                    { searchText = model.filter.searchText
+                    , pageNo = newPageNo
+                    , translated = model.filter.translated
+                    }
+
+                newProgresses =
+                    filteredProgresses newFilter model.allProgresses
+            in
+            ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
 
 
