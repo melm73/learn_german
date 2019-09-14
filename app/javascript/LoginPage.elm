@@ -71,8 +71,8 @@ init flags =
 
 view : Model -> Html Msg
 view model =
-    div [ class "row" ]
-        [ div [ class "col-sm-4 offset-sm-4" ]
+    div [ class "row pt-sm-3" ]
+        [ div [ class "col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4" ]
             [ div [ class "card" ]
                 [ div [ class "card-header" ] [ text "Login" ]
                 , div [ class "card-body" ]
@@ -89,8 +89,9 @@ view model =
                         ]
                     ]
                 , div [ class "card-footer" ]
-                    [ button [ class "btn btn-primary", onClick SubmitForm ] [ text "Login" ]
-                    , a [ href model.urls.signUpUrl ] [ text "Sign-up now!" ]
+                    [ button [ class "btn btn-primary mr-3", onClick SubmitForm ] [ text "Login" ]
+                    , text " or "
+                    , a [ class "link", href model.urls.signUpUrl ] [ text "Sign-up now!" ]
                     ]
                 ]
             ]

@@ -34,6 +34,15 @@
   padding-left: 10px;
 }
 
+.table .thead-dark th {
+  background-color: #3d1860;
+  border-color: #643579;
+}
+
+a.link {
+  color: #3d1860;
+}
+
 .dot {
   height: 15px;
   width: 15px;
