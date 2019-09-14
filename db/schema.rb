@@ -10,11 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_14_062439) do
+ActiveRecord::Schema.define(version: 2019_09_14_091304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "reviews", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "correct"
+    t.uuid "translation_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
@@ -46,4 +53,5 @@ ActiveRecord::Schema.define(version: 2019_09_14_062439) do
     t.string "chapter"
   end
 
+  add_foreign_key "reviews", "translations"
 end

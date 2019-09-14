@@ -50,7 +50,7 @@ type alias Progress =
     , sentence : Maybe String
     , level : Int
     , timesReviewed : Int
-    , lastReview : Maybe String
+    , lastReviewed : Maybe String
     , learnt : Bool
     }
 
@@ -132,7 +132,7 @@ rowView progress =
             ]
         , td [ class "text-center align-middle" ] [ levelView progress.level ]
         , td [ class "text-center align-middle" ] [ text (String.fromInt progress.timesReviewed) ]
-        , td [ class "text-center align-middle" ] [ text (Maybe.withDefault "" progress.lastReview) ]
+        , td [ class "text-center align-middle" ] [ text (Maybe.withDefault "" progress.lastReviewed) ]
         , td [ class "text-center align-middle" ] [ learntView progress.learnt ]
         ]
 
