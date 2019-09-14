@@ -1,9 +1,6 @@
 class ApplicationController < ActionController::Base
-
   def current_user
-    if session[:user_id]
-      @current_user ||= User.find_by(id: session[:user_id])
-    end
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
 
   def log_in(user)
@@ -21,13 +18,13 @@ class ApplicationController < ActionController::Base
 
   def menu_props(current_page:)
     @menu_props = {
-        user: { name: current_user.name },
-        currentPage: current_page,
-        urls: { 
-          logoutUrl: logout_path,
-          profileUrl: profile_path,
-          progressUrl: progress_index_path
-        }
+      user: { name: current_user.name },
+      currentPage: current_page,
+      urls: {
+        logoutUrl: logout_path,
+        profileUrl: profile_path,
+        progressUrl: progress_index_path,
+      },
     }
   end
 end

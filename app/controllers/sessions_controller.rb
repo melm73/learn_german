@@ -1,11 +1,10 @@
 class SessionsController < ApplicationController
-
   def new
-    @login_page_props = { 
-      urls: { 
+    @login_page_props = {
+      urls: {
         signUpUrl: signup_path,
         loginUrl: login_path,
-      }
+      },
     }
 
     render :new
@@ -14,7 +13,7 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by(email: params[:session][:email].downcase)
 
-    if user && user.authenticate(params[:session][:password])
+    if user&.authenticate(params[:session][:password])
       log_in(user)
       render json: { redirectTo: progress_index_path }, status: :created
     else

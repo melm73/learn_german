@@ -13,8 +13,8 @@ class UsersController < ApplicationController
   def new
     @signup_page_props = {
       urls: {
-        createUserUrl: users_path
-      }
+        createUserUrl: users_path,
+      },
     }
 
     render :new
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
           name: current_user.name,
           email: current_user.email,
         },
-        urls: { updateUserUrl: users_path}
+        urls: { updateUserUrl: users_path },
       }
 
       render :show

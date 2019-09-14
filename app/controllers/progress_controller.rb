@@ -4,8 +4,8 @@ class ProgressController < ApplicationController
     @progress_props = {
       progresses: generate_progresses,
       urls: {
-        editTransactionUrl: translation_path
-      }
+        editTransactionUrl: translation_path,
+      },
     }
 
     render :index
@@ -31,7 +31,7 @@ class ProgressController < ApplicationController
       level: translation&.level || 0,
       timesReviewed: translation&.review_count || 0,
       lastReviewed: translation&.last_reviewed,
-      learnt: translation&.learnt || false
+      learnt: translation&.learnt || false,
     }
   end
 

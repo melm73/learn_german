@@ -31,7 +31,7 @@ class TranslationsController < ApplicationController
       urls: {
         createTranslationUrl: translations_path,
         updateTranslationUrl: translations_path,
-      }
+      },
     }
 
     render :edit
@@ -49,7 +49,7 @@ class TranslationsController < ApplicationController
 
   def serialize_translation(translation)
     return unless translation
-      
+
     {
       id: translation.id,
       user_id: translation.user_id,
