@@ -1,14 +1,18 @@
 class ProgressController < ApplicationController
   def index
-    menu_props(current_page: 'progress')
-    @progress_props = {
-      progresses: generate_progresses,
-      urls: {
-        editTransactionUrl: translation_path,
-      },
-    }
+    if logged_in?
+      menu_props(current_page: 'progress')
+      @progress_props = {
+        progresses: generate_progresses,
+        urls: {
+          editTransactionUrl: translation_path,
+        },
+      }
 
-    render :index
+      render :index
+    else
+      redirect_to login_path
+    end
   end
 
   private

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  root 'welcome#index'
-  
+  root 'progress#index'
+
   get '/signup', to: 'users#new'
   get '/profile', as: 'profile', to: 'users#show'
 
