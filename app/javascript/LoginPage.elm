@@ -2,7 +2,6 @@ module LoginPage exposing (..)
 
 import Browser
 import Browser.Navigation exposing (load)
-import Debug
 import Html exposing (Html, a, button, div, form, h1, input, label, small, text)
 import Html.Attributes exposing (class, for, href, id, required, type_, value)
 import Html.Attributes.Aria exposing (ariaDescribedby)
@@ -114,7 +113,7 @@ errorView model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case Debug.log "msg" msg of
+    case msg of
         SetEmail email ->
             ( { model | email = email }, Cmd.none )
 

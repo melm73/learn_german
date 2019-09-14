@@ -200,10 +200,6 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    let
-        _ =
-            Debug.log "message" message
-    in
     case message of
         SetTranslation translation ->
             let

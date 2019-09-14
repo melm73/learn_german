@@ -312,10 +312,6 @@ viewProgresses model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    let
-        _ =
-            Debug.log "message" message
-    in
     case message of
         SearchStringChanged searchText ->
             let

@@ -2,7 +2,6 @@ module SignUpPage exposing (..)
 
 import Browser
 import Browser.Navigation exposing (load)
-import Debug
 import Html exposing (Html, button, div, form, h1, input, label, small, text)
 import Html.Attributes exposing (class, for, id, required, type_, value)
 import Html.Attributes.Aria exposing (ariaDescribedby)
@@ -122,7 +121,7 @@ view model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case Debug.log "msg" msg of
+    case msg of
         SetName name ->
             ( { model | name = name }, Cmd.none )
 
@@ -154,10 +153,6 @@ update msg model =
             ( model, load redirectUrl )
 
         HandleResponse (Err (BadStatus 422 json)) ->
-            let
-                _ =
-                    Debug.log "json" json
-            in
             ( model, Cmd.none )
 
         HandleResponse _ ->
