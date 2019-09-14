@@ -2,8 +2,8 @@ module LoginPage exposing (..)
 
 import Browser
 import Browser.Navigation exposing (load)
-import Html exposing (Html, a, button, div, form, h1, input, label, small, text)
-import Html.Attributes exposing (class, for, href, id, required, type_, value)
+import Html exposing (Html, a, button, div, form, h1, img, input, label, small, text)
+import Html.Attributes exposing (class, for, href, id, required, src, type_, value)
 import Html.Attributes.Aria exposing (ariaDescribedby)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (request)
@@ -71,9 +71,13 @@ init flags =
 
 view : Model -> Html Msg
 view model =
-    div [ class "row pt-sm-3" ]
-        [ div [ class "col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4" ]
-            [ div [ class "card" ]
+    div [ class "row" ]
+        [ div [ class "col-sm-4 offset-sm-4" ]
+            [ div []
+                [ div [ class "display-4 text-center" ] [ text "Learn" ]
+                , div [ class "display-4 text-center" ] [ text "German" ]
+                ]
+            , div [ class "card" ]
                 [ div [ class "card-header" ] [ text "Login" ]
                 , div [ class "card-body" ]
                     [ form []

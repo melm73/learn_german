@@ -86,7 +86,11 @@ view : Model -> Html Msg
 view model =
     div [ class "row" ]
         [ div [ class "col-sm-4 offset-sm-4" ]
-            [ div [ class "card" ]
+            [ div []
+                [ div [ class "display-4 text-center" ] [ text "Learn" ]
+                , div [ class "display-4 text-center" ] [ text "German" ]
+                ]
+            , div [ class "card" ]
                 [ div [ class "card-header" ] [ text "Sign Up" ]
                 , div [ class "card-body" ]
                     [ form []

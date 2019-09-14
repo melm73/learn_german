@@ -1,4 +1,8 @@
-  
+.container {
+  padding-left: 0px;
+  padding-right: 0px;
+}  
+
 .card-header {
   background-color: #3d1860;
   border-color: #643579;
@@ -40,6 +44,10 @@
 }
 
 a.link {
+  color: #3d1860;
+}
+
+.display-4 {
   color: #3d1860;
 }
 
