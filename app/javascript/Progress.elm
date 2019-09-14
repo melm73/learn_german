@@ -31,6 +31,7 @@ type alias Filter =
     { pageNo : Int
     , searchText : String
     , translated : TranslatedOption
+    , chapter : Maybe String
     }
 
 
@@ -44,6 +45,7 @@ type alias Progress =
     { wordId : String
     , german : String
     , article : Maybe String
+    , chapter : Maybe String
     , translated : Bool
     , sentence : Maybe String
     , level : Int
@@ -86,6 +88,7 @@ defaultFilter =
     { pageNo = 1
     , searchText = ""
     , translated = Yes
+    , chapter = Nothing
     }
 
 
@@ -174,6 +177,15 @@ searchView model =
                 , option [ selected (model.filter.translated == No), value "No" ] [ text "No" ]
                 ]
             ]
+        , div [ class "form-group pr-3" ]
+            [ label [ class "pr-2" ] [ text "Chapter" ]
+            , select [ class "form-control", onInput SelectChapterOption ]
+                [ option [ selected (model.filter.chapter == Nothing), value "Any" ] [ text "Any" ]
+                , option [ selected (model.filter.chapter == Just "1.1"), value "1.1" ] [ text "1.1" ]
+                , option [ selected (model.filter.chapter == Just "1.2"), value "1.2" ] [ text "1.2" ]
+                , option [ selected (model.filter.chapter == Just "1.3"), value "1.3" ] [ text "1.3" ]
+                ]
+            ]
         , div [ class "form-group position-relative" ]
             [ input
                 [ type_ "text"
@@ -259,6 +271,7 @@ type Msg
     | ClearSearchText
     | ProgressClicked String
     | SelectTranslatedOption String
+    | SelectChapterOption String
     | PaginationClicked PaginationDirection
 
 
@@ -276,6 +289,16 @@ progressesPerPage =
     20
 
 
+isInChapter : String -> Progress -> Bool
+isInChapter chapter progress =
+    case progress.chapter of
+        Nothing ->
+            False
+
+        Just progressChapter ->
+            progressChapter == chapter
+
+
 filteredProgresses : Filter -> List Progress -> List Progress
 filteredProgresses filter progresses =
     let
@@ -289,13 +312,21 @@ filteredProgresses filter progresses =
 
                 Yes ->
                     List.filter (\p -> p.translated) progresses
+
+        chapterProgresses =
+            case filter.chapter of
+                Nothing ->
+                    translatedProgresses
+
+                Just chapter ->
+                    List.filter (isInChapter chapter) translatedProgresses
     in
     case filter.searchText of
         "" ->
-            translatedProgresses
+            chapterProgresses
 
         searchString ->
-            List.filter (\p -> String.contains searchString p.german) translatedProgresses
+            List.filter (\p -> String.contains searchString p.german) chapterProgresses
 
 
 viewProgresses : Model -> List Progress
@@ -319,6 +350,7 @@ update message model =
                     { searchText = searchText
                     , pageNo = 1
                     , translated = model.filter.translated
+                    , chapter = model.filter.chapter
                     }
 
                 newProgresses =
@@ -332,6 +364,7 @@ update message model =
                     { searchText = ""
                     , pageNo = 1
                     , translated = model.filter.translated
+                    , chapter = model.filter.chapter
                     }
 
                 newProgresses =
@@ -362,6 +395,7 @@ update message model =
                     { searchText = model.filter.searchText
                     , pageNo = 1
                     , translated = translatedOption
+                    , chapter = model.filter.chapter
                     }
 
                 newProgresses =
@@ -389,6 +423,29 @@ update message model =
                     { searchText = model.filter.searchText
                     , pageNo = newPageNo
                     , translated = model.filter.translated
+                    , chapter = model.filter.chapter
+                    }
+
+                newProgresses =
+                    filteredProgresses newFilter model.allProgresses
+            in
+            ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
+
+        SelectChapterOption option ->
+            let
+                selectedChapter =
+                    case option of
+                        "Any" ->
+                            Nothing
+
+                        _ ->
+                            Just option
+
+                newFilter =
+                    { searchText = model.filter.searchText
+                    , pageNo = 1
+                    , translated = model.filter.translated
+                    , chapter = selectedChapter
                     }
 
                 newProgresses =
