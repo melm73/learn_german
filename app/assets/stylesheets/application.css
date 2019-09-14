@@ -43,11 +43,7 @@
   border-color: #643579;
 }
 
-a.link {
-  color: #3d1860;
-}
-
-.display-4 {
+a.link, .display-4, .navbar-brand span {
   color: #3d1860;
 }
 

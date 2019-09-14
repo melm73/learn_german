@@ -57,7 +57,10 @@ view model =
             "review"
     in
     nav [ class "navbar navbar-expand-lg navbar-light bg-light justify-content-between mb-3" ]
-        [ img [ class "navbar-brand", src "/favicon.ico" ] []
+        [ div [ class "navbar-brand" ]
+            [ img [ src "/favicon.ico" ] []
+            , span [ class "pl-2" ] [ text "Learn German" ]
+            ]
         , button
             [ class "navbar-toggler"
             , type_ "button"
@@ -69,13 +72,13 @@ view model =
             ]
             [ span [ class "navbar-toggler-icon" ] [] ]
         , div [ class "collapse navbar-collapse", id "navbarSupportedContent" ]
-            [ ul [ class "navbar-nav mr-auto" ]
+            [ ul [ class "navbar-nav mr-auto text-right" ]
                 [ li [ classList [ ( "nav-item", True ), ( "active", model.currentPage == progressPage ) ] ]
                     [ a [ class "nav-link", href "/progress" ] [ text "Progress" ] ]
                 , li [ classList [ ( "nav-item", True ), ( "active", model.currentPage == reviewPage ) ] ]
                     [ a [ class "nav-link", href "" ] [ text "Review" ] ]
                 ]
-            , ul [ class "navbar-nav" ]
+            , ul [ class "navbar-nav text-right" ]
                 [ li [ class "nav-item dropdown" ]
                     [ a
                         [ class "nav-link dropdown-toggle"
@@ -87,8 +90,8 @@ view model =
                         ]
                         [ text model.user.name ]
                     , div [ class "dropdown-menu dropdown-menu-right", attribute "aria-labelledby" "#navbarDropdownMenuLink" ]
-                        [ button [ class "dropdown-item", onClick Logout ] [ text "logout" ]
-                        , a [ class "dropdown-item", href "/profile" ] [ text "my profile" ]
+                        [ button [ class "dropdown-item text-right", onClick Logout ] [ text "logout" ]
+                        , a [ class "dropdown-item text-right", href "/profile" ] [ text "my profile" ]
                         ]
                     ]
                 ]

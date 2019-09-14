@@ -108,7 +108,7 @@ view : Model -> Html Msg
 view model =
     div [ class "row" ]
         [ div [ class "col-sm-6 offset-sm-3" ]
-            [ h1 [] [ text "Translate" ]
+            [ h1 [ class "pl-3" ] [ text "Translate" ]
             , div [ class "card" ]
                 [ h5 [ class "card-header" ] [ text (fullWord model.word.article model.word.german) ]
                 , div [ class "card-body" ]
