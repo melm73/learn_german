@@ -13,4 +13,5 @@ Rails.application.routes.draw do
 
   get '/translation', to: 'translations#edit'
   resources :translations, only: [:create, :update]
+  resources :reviews, only: [:create, :index]
 end

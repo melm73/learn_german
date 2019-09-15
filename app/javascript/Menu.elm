@@ -76,7 +76,7 @@ view model =
                 [ li [ classList [ ( "nav-item", True ), ( "active", model.currentPage == progressPage ) ] ]
                     [ a [ class "nav-link", href "/progress" ] [ text "Progress" ] ]
                 , li [ classList [ ( "nav-item", True ), ( "active", model.currentPage == reviewPage ) ] ]
-                    [ a [ class "nav-link", href "" ] [ text "Review" ] ]
+                    [ a [ class "nav-link", href "/reviews" ] [ text "Review" ] ]
                 ]
             , ul [ class "navbar-nav text-right" ]
                 [ li [ class "nav-item dropdown" ]
