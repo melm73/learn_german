@@ -5,6 +5,7 @@ class ReviewsController < ApplicationController
       @review_page_props = {
         urls: {
           getReviewsUrl: review_reviews_path,
+          postReviewUrl: reviews_path,
         },
       }
 
