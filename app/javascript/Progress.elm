@@ -326,7 +326,7 @@ filteredProgresses filter progresses =
             chapterProgresses
 
         searchString ->
-            List.filter (\p -> String.contains searchString p.german) chapterProgresses
+            List.filter (\p -> String.contains (String.toLower searchString) (String.toLower p.german)) chapterProgresses
 
 
 viewProgresses : Model -> List Progress
