@@ -30,8 +30,9 @@ type alias Model =
 type alias Filter =
     { pageNo : Int
     , searchText : String
-    , translated : TranslatedOption
+    , translated : YesNoOption
     , chapter : Maybe String
+    , known : YesNoOption
     }
 
 
@@ -55,7 +56,7 @@ type alias Progress =
     }
 
 
-type TranslatedOption
+type YesNoOption
     = Any
     | No
     | Yes
@@ -89,6 +90,7 @@ defaultFilter =
     , searchText = ""
     , translated = Yes
     , chapter = Nothing
+    , known = No
     }
 
 
@@ -170,6 +172,14 @@ searchView : Model -> Html Msg
 searchView model =
     form [ class "search-form form-inline float-lg-right" ]
         [ div [ class "form-group pr-3" ]
+            [ label [ class "pr-2" ] [ text "Learnt?" ]
+            , select [ class "form-control", onInput SelectKnownOption ]
+                [ option [ selected (model.filter.known == Any), value "Any" ] [ text "Any" ]
+                , option [ selected (model.filter.known == Yes), value "Yes" ] [ text "Yes" ]
+                , option [ selected (model.filter.known == No), value "No" ] [ text "No" ]
+                ]
+            ]
+        , div [ class "form-group pr-3" ]
             [ label [ class "pr-2" ] [ text "Translated?" ]
             , select [ class "form-control", onInput SelectTranslatedOption ]
                 [ option [ selected (model.filter.translated == Any), value "Any" ] [ text "Any" ]
@@ -271,6 +281,7 @@ type Msg
     | ClearSearchText
     | ProgressClicked String
     | SelectTranslatedOption String
+    | SelectKnownOption String
     | SelectChapterOption String
     | PaginationClicked PaginationDirection
 
@@ -302,16 +313,27 @@ isInChapter chapter progress =
 filteredProgresses : Filter -> List Progress -> List Progress
 filteredProgresses filter progresses =
     let
-        translatedProgresses =
-            case filter.translated of
+        knownProgresses =
+            case filter.known of
                 Any ->
                     progresses
 
                 No ->
-                    List.filter (\p -> not p.translated) progresses
+                    List.filter (\p -> not p.learnt) progresses
 
                 Yes ->
-                    List.filter (\p -> p.translated) progresses
+                    List.filter (\p -> p.learnt) progresses
+
+        translatedProgresses =
+            case filter.translated of
+                Any ->
+                    knownProgresses
+
+                No ->
+                    List.filter (\p -> not p.translated) knownProgresses
+
+                Yes ->
+                    List.filter (\p -> p.translated) knownProgresses
 
         chapterProgresses =
             case filter.chapter of
@@ -351,6 +373,7 @@ update message model =
                     , pageNo = 1
                     , translated = model.filter.translated
                     , chapter = model.filter.chapter
+                    , known = model.filter.known
                     }
 
                 newProgresses =
@@ -365,6 +388,7 @@ update message model =
                     , pageNo = 1
                     , translated = model.filter.translated
                     , chapter = model.filter.chapter
+                    , known = model.filter.known
                     }
 
                 newProgresses =
@@ -374,6 +398,35 @@ update message model =
 
         ProgressClicked wordId ->
             ( model, load (model.urls.editTransactionUrl ++ "?word_id=" ++ wordId) )
+
+        SelectKnownOption option ->
+            let
+                knownOption =
+                    case option of
+                        "Any" ->
+                            Any
+
+                        "Yes" ->
+                            Yes
+
+                        "No" ->
+                            No
+
+                        _ ->
+                            Any
+
+                newFilter =
+                    { searchText = model.filter.searchText
+                    , pageNo = 1
+                    , translated = model.filter.translated
+                    , chapter = model.filter.chapter
+                    , known = knownOption
+                    }
+
+                newProgresses =
+                    filteredProgresses newFilter model.allProgresses
+            in
+            ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
         SelectTranslatedOption option ->
             let
@@ -396,6 +449,7 @@ update message model =
                     , pageNo = 1
                     , translated = translatedOption
                     , chapter = model.filter.chapter
+                    , known = model.filter.known
                     }
 
                 newProgresses =
@@ -424,6 +478,7 @@ update message model =
                     , pageNo = newPageNo
                     , translated = model.filter.translated
                     , chapter = model.filter.chapter
+                    , known = model.filter.known
                     }
 
                 newProgresses =
@@ -446,6 +501,7 @@ update message model =
                     , pageNo = 1
                     , translated = model.filter.translated
                     , chapter = selectedChapter
+                    , known = model.filter.known
                     }
 
                 newProgresses =
