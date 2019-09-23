@@ -34,9 +34,14 @@ class ProgressController < ApplicationController
       sentence: translation&.sentence,
       level: translation&.level || 0,
       timesReviewed: translation&.review_count || 0,
-      lastReviewed: translation&.last_reviewed,
+      lastReviewed: format_date(translation&.last_reviewed),
       learnt: translation&.learnt || false,
     }
+  end
+
+  def format_date(date)
+    return nil unless date
+    date.strftime("%d %b, %Y")
   end
 
   def translations_by_word
