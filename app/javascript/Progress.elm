@@ -7,6 +7,7 @@ import Functions exposing (fullWord)
 import Html exposing (Html, button, div, form, h1, input, label, li, nav, option, select, span, table, tbody, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (attribute, class, classList, placeholder, scope, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
+import ProgressPieChart
 
 
 
@@ -101,7 +102,7 @@ defaultFilter =
 view : Model -> Html Msg
 view model =
     div [ class "row" ]
-        [ div [ class "col-lg-12" ]
+        [ div [ class "col-lg-9" ]
             [ div [ class "row align-items-center" ]
                 [ div [ class "col-sm-4" ]
                     [ h1 [] [ text "Progress" ]
@@ -122,6 +123,8 @@ view model =
                 , tbody [] (List.map rowView (viewProgresses model))
                 ]
             ]
+        , div [ class "col-lg-3" ]
+            [ ProgressPieChart.view (progressStats model) ]
         ]
 
 
@@ -308,6 +311,35 @@ isInChapter chapter progress =
 
         Just progressChapter ->
             progressChapter == chapter
+
+
+progressStats : Model -> List Float
+progressStats model =
+    let
+        chapterProgresses =
+            case model.filter.chapter of
+                Nothing ->
+                    model.allProgresses
+
+                Just chapter ->
+                    List.filter (isInChapter chapter) model.allProgresses
+
+        totalCount =
+            List.length chapterProgresses
+
+        learntCount =
+            List.length (List.filter (\p -> p.learnt) chapterProgresses)
+
+        translatedCount =
+            List.length (List.filter (\p -> p.translated) chapterProgresses) - learntCount
+
+        notSeenCount =
+            totalCount - translatedCount
+    in
+    [ toFloat learntCount / toFloat totalCount * 100
+    , toFloat translatedCount / toFloat totalCount * 100
+    , toFloat notSeenCount / toFloat totalCount * 100
+    ]
 
 
 filteredProgresses : Filter -> List Progress -> List Progress
