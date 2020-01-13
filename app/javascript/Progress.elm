@@ -117,7 +117,6 @@ view model =
                         , th [ scope "col", class "text-center" ] [ text "LEVEL" ]
                         , th [ scope "col", class "text-center" ] [ text "NO. REVIEWS" ]
                         , th [ scope "col", class "text-center" ] [ text "LAST REVIEWED" ]
-                        , th [ scope "col", class "text-center" ] [ text "LEARNT" ]
                         ]
                     ]
                 , tbody [] (List.map rowView (viewProgresses model))
@@ -138,7 +137,6 @@ rowView progress =
         , td [ class "text-center align-middle" ] [ levelView progress.level ]
         , td [ class "text-center align-middle" ] [ text (String.fromInt progress.timesReviewed) ]
         , td [ class "text-center align-middle" ] [ text (Maybe.withDefault "" progress.lastReviewed) ]
-        , td [ class "text-center align-middle" ] [ learntView progress.learnt ]
         ]
 
 
