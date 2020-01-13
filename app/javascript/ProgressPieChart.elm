@@ -39,6 +39,11 @@ radius =
     min width height / 2
 
 
+mySortingFn : Float -> Float -> Order
+mySortingFn a b =
+    EQ
+
+
 annular : List Arc -> Svg msg
 annular arc =
     let
@@ -97,7 +102,7 @@ view : List Float -> Svg msg
 view data =
     let
         pieData =
-            data |> Shape.pie { defaultPieConfig | cornerRadius = 8, outerRadius = radius, padAngle = 0.03 }
+            data |> Shape.pie { defaultPieConfig | sortingFn = mySortingFn, cornerRadius = 8, outerRadius = radius, padAngle = 0.03 }
     in
     svg [ viewBox 0 0 width height ]
         [ annular pieData
