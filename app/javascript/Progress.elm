@@ -89,9 +89,9 @@ defaultFilter : Filter
 defaultFilter =
     { pageNo = 1
     , searchText = ""
-    , translated = Yes
+    , translated = Any
     , chapter = Nothing
-    , known = No
+    , known = Any
     }
 
 
