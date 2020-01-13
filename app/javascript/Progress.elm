@@ -313,7 +313,7 @@ isInChapter chapter progress =
             progressChapter == chapter
 
 
-progressStats : Model -> List Float
+progressStats : Model -> ProgressPieChart.Stats
 progressStats model =
     let
         chapterProgresses =
@@ -334,12 +334,13 @@ progressStats model =
             List.length (List.filter (\p -> p.translated) chapterProgresses) - learntCount
 
         notSeenCount =
-            totalCount - translatedCount
+            totalCount - translatedCount - learntCount
     in
-    [ toFloat learntCount / toFloat totalCount * 100
-    , toFloat translatedCount / toFloat totalCount * 100
-    , toFloat notSeenCount / toFloat totalCount * 100
-    ]
+    { percentageLearnt = toFloat learntCount / toFloat totalCount * 100
+    , percentageTranslated = toFloat translatedCount / toFloat totalCount * 100
+    , percentageNotSeen = toFloat notSeenCount / toFloat totalCount * 100
+    , numberOfWords = totalCount
+    }
 
 
 filteredProgresses : Filter -> List Progress -> List Progress
