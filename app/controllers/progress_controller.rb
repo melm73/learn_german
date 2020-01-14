@@ -29,6 +29,7 @@ class ProgressController < ApplicationController
       wordId: word.id,
       german: word.german,
       article: word.article,
+      category: word.category,
       chapter: (word.duolingo_level.nil? ? nil : word.duolingo_level.to_s),
       translated: translation.present?,
       sentence: translation&.sentence,

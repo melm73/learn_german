@@ -65,6 +65,7 @@ type alias Word =
     { id : String
     , german : String
     , article : Maybe String
+    , category : Maybe String
     }
 
 
@@ -150,7 +151,7 @@ reviewView model =
                 [ div [ class "col-sm-6 offset-sm-3" ]
                     [ h1 [ class "pl-3" ] [ text "Translate" ]
                     , div [ class "card" ]
-                        [ h5 [ class "card-header" ] [ text review.translation.translation ]
+                        [ h5 [ class "card-header" ] [ titleView review ]
                         , div [ class "card-body" ]
                             [ div [ class "form-group" ]
                                 [ label [ for "inputTranslation" ] [ text "Translation" ]
@@ -179,6 +180,20 @@ reviewView model =
                         ]
                     ]
                 ]
+
+
+titleView : Review -> Html Msg
+titleView review =
+    let
+        category =
+            case review.word.category of
+                Nothing ->
+                    ""
+
+                Just wordCategory ->
+                    " (" ++ wordCategory ++ ")"
+    in
+    text (review.translation.translation ++ category)
 
 
 stateView : Model -> Review -> Html Msg
@@ -360,10 +375,11 @@ translationDecoder =
 
 wordDecoder : Decode.Decoder Word
 wordDecoder =
-    Decode.map3 Word
+    Decode.map4 Word
         (Decode.field "id" Decode.string)
         (Decode.field "german" Decode.string)
         (Decode.field "article" (Decode.nullable Decode.string))
+        (Decode.field "category" (Decode.nullable Decode.string))
 
 
 focusOn : String -> Cmd Msg

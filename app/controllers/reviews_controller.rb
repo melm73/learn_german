@@ -57,6 +57,7 @@ class ReviewsController < ApplicationController
       id: word.id,
       german: word.german,
       article: word.article,
+      category: word.category,
     }
   end
 end

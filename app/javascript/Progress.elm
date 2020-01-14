@@ -47,6 +47,7 @@ type alias Progress =
     { wordId : String
     , german : String
     , article : Maybe String
+    , category : String
     , chapter : Maybe String
     , translated : Bool
     , sentence : Maybe String
@@ -114,9 +115,9 @@ view model =
                 [ thead [ class "thead-dark" ]
                     [ tr []
                         [ th [ scope "col" ] [ text "GERMAN" ]
+                        , th [ scope "col", class "text-center" ] [ text "TYPE" ]
                         , th [ scope "col", class "text-center" ] [ text "LEVEL" ]
-                        , th [ scope "col", class "text-center" ] [ text "NO. REVIEWS" ]
-                        , th [ scope "col", class "text-center" ] [ text "LAST REVIEWED" ]
+                        , th [ scope "col", class "text-center" ] [ text "REVIEWS" ]
                         ]
                     ]
                 , tbody [] (List.map rowView (viewProgresses model))
@@ -134,10 +135,26 @@ rowView progress =
             [ div [ class "lead" ] [ text (fullWord progress.article progress.german) ]
             , div [ class "text-muted" ] [ text (Maybe.withDefault "" progress.sentence) ]
             ]
+        , td [ class "text-center align-middle" ] [ text progress.category ]
         , td [ class "text-center align-middle" ] [ levelView progress.level ]
-        , td [ class "text-center align-middle" ] [ text (String.fromInt progress.timesReviewed) ]
-        , td [ class "text-center align-middle" ] [ text (Maybe.withDefault "" progress.lastReviewed) ]
+        , td [] (reviewView progress)
         ]
+
+
+reviewView : Progress -> List (Html Msg)
+reviewView progress =
+    [ div [ class "text-center align-middle" ]
+        [ case progress.timesReviewed of
+            0 ->
+                text ""
+
+            _ ->
+                text (String.fromInt progress.timesReviewed)
+        ]
+    , div [ class "text-center align-middle text-muted" ]
+        [ text (Maybe.withDefault "" progress.lastReviewed)
+        ]
+    ]
 
 
 levelView : Int -> Html Msg
