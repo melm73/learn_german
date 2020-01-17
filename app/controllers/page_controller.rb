@@ -1,6 +1,10 @@
 class PageController < ApplicationController
   def index
-    @page_props = menu_props(current_page: 'progress')
-    render :index
+    if logged_in?
+      @page_props = menu_props(current_page: 'progress')
+      render :index
+    else
+      redirect_to login_path
+    end
   end
 end
