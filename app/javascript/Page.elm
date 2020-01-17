@@ -38,9 +38,9 @@ type alias Model =
 
 
 type Page
-    = Profile ProfilePage.Model
-    | Progress ProgressPage.Model
-    | NotFound
+    = ProfilePage ProfilePage.Model
+    | ProgressPage ProgressPage.Model
+    | NotFoundPage
 
 
 type Route
@@ -55,7 +55,7 @@ init flags url key =
 
 initialPage : Page
 initialPage =
-    Profile ProfilePage.init
+    ProfilePage ProfilePage.init
 
 
 
@@ -77,13 +77,13 @@ update msg model =
                 Browser.Internal url ->
                     case url.path of
                         "/" ->
-                            ( { model | page = Progress ProgressPage.init }, Nav.pushUrl model.key (Url.toString url) )
+                            ( { model | page = ProgressPage ProgressPage.init }, Nav.pushUrl model.key (Url.toString url) )
 
                         "/profile" ->
-                            ( { model | page = Profile ProfilePage.init }, Nav.pushUrl model.key (Url.toString url) )
+                            ( { model | page = ProfilePage ProfilePage.init }, Nav.pushUrl model.key (Url.toString url) )
 
                         _ ->
-                            ( model, Nav.pushUrl model.key (Url.toString url) )
+                            ( { model | page = NotFoundPage }, Nav.pushUrl model.key (Url.toString url) )
 
                 Browser.External href ->
                     ( model, Nav.load href )
@@ -115,36 +115,20 @@ subscriptions _ =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "URL Interceptor"
+    { title = "Learn German"
     , body =
-        [ viewPage model
-        , text "The current URL is: "
-        , b [] [ text (Url.toString model.url) ]
-        , ul []
-            [ viewLink "/progress"
-            , viewLink "/profile"
-            ]
+        [ case model.page of
+            ProfilePage subModel ->
+                ProfilePage.view subModel
+                    |> Page.layout Page.ProfilePage
+                    |> Html.map ProfileMsg
+
+            ProgressPage subModel ->
+                ProgressPage.view subModel
+                    |> Page.layout Page.ProgressPage
+                    |> Html.map ProgressMsg
+
+            NotFoundPage ->
+                text "page not found"
         ]
     }
-
-
-viewPage : Model -> Html Msg
-viewPage model =
-    case model.page of
-        Profile subModel ->
-            ProfilePage.view subModel
-                |> Page.layout Page.Profile
-                |> Html.map ProfileMsg
-
-        Progress subModel ->
-            ProgressPage.view subModel
-                |> Page.layout Page.Progress
-                |> Html.map ProgressMsg
-
-        NotFound ->
-            text "page not found"
-
-
-viewLink : String -> Html Msg
-viewLink path =
-    li [] [ a [ href path ] [ text path ] ]
