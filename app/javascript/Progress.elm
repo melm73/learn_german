@@ -78,7 +78,7 @@ type PaginationDirection
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { allProgresses = flags.progresses
-      , filteredProgresses = filteredProgresses defaultFilter flags.progresses
+      , filteredProgresses = sortedProgresses (filteredProgresses defaultFilter flags.progresses)
       , filter = defaultFilter
       , urls = flags.urls
       }
@@ -114,7 +114,7 @@ view model =
             , table [ class "table table-hover" ]
                 [ thead [ class "thead-dark" ]
                     [ tr []
-                        [ th [ scope "col" ] [ text "GERMAN" ]
+                        [ th [ scope "col" ] [ text "GERMAN", sortView ]
                         , th [ scope "col", class "text-center" ] [ text "TYPE" ]
                         , th [ scope "col", class "text-center" ] [ text "LEVEL" ]
                         , th [ scope "col", class "text-center" ] [ text "REVIEWS" ]
@@ -126,6 +126,21 @@ view model =
         , div [ class "col-lg-3" ]
             [ ProgressPieChart.view (progressStats model) ]
         ]
+
+
+sortView : Html Msg
+sortView =
+    text (" " ++ String.fromChar sortUp)
+
+
+sortUp : Char
+sortUp =
+    '▲'
+
+
+sortDown : Char
+sortDown =
+    '▼'
 
 
 rowView : Progress -> Html Msg
@@ -358,6 +373,24 @@ progressStats model =
     }
 
 
+sortedProgresses : List Progress -> List Progress
+sortedProgresses progresses =
+    List.sortBy .german progresses
+        |> List.sortWith flippedLevelComparison
+
+
+flippedLevelComparison a b =
+    case compare a.level b.level of
+        LT ->
+            GT
+
+        EQ ->
+            EQ
+
+        GT ->
+            LT
+
+
 filteredProgresses : Filter -> List Progress -> List Progress
 filteredProgresses filter progresses =
     let
@@ -425,7 +458,7 @@ update message model =
                     }
 
                 newProgresses =
-                    filteredProgresses newFilter model.allProgresses
+                    sortedProgresses (filteredProgresses newFilter model.allProgresses)
             in
             ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
@@ -440,7 +473,7 @@ update message model =
                     }
 
                 newProgresses =
-                    filteredProgresses newFilter model.allProgresses
+                    sortedProgresses (filteredProgresses newFilter model.allProgresses)
             in
             ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
@@ -472,7 +505,7 @@ update message model =
                     }
 
                 newProgresses =
-                    filteredProgresses newFilter model.allProgresses
+                    sortedProgresses (filteredProgresses newFilter model.allProgresses)
             in
             ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
@@ -501,7 +534,7 @@ update message model =
                     }
 
                 newProgresses =
-                    filteredProgresses newFilter model.allProgresses
+                    sortedProgresses (filteredProgresses newFilter model.allProgresses)
             in
             ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
@@ -530,7 +563,7 @@ update message model =
                     }
 
                 newProgresses =
-                    filteredProgresses newFilter model.allProgresses
+                    sortedProgresses (filteredProgresses newFilter model.allProgresses)
             in
             ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
@@ -553,7 +586,7 @@ update message model =
                     }
 
                 newProgresses =
-                    filteredProgresses newFilter model.allProgresses
+                    sortedProgresses (filteredProgresses newFilter model.allProgresses)
             in
             ( { model | filter = newFilter, filteredProgresses = newProgresses }, Cmd.none )
 
