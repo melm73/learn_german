@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'progress#index'
+  root 'page#index'
 
   get '/signup', to: 'users#new'
   get '/profile', as: 'profile', to: 'users#show'
