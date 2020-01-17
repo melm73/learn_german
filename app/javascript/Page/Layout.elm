@@ -2,6 +2,7 @@ module Page.Layout exposing (..)
 
 import Html exposing (Html, a, button, div, footer, img, li, nav, span, text, ul)
 import Html.Attributes exposing (attribute, class, classList, href, id, src, type_)
+import State exposing (State)
 
 
 type ActivePage
@@ -10,16 +11,16 @@ type ActivePage
     | ReviewPage
 
 
-layout : ActivePage -> Html msg -> Html msg
-layout page content =
+layout : ActivePage -> State -> Html msg -> Html msg
+layout page state content =
     div []
-        [ viewHeader page
+        [ viewHeader page state
         , div [] [ content ]
         ]
 
 
-viewHeader : ActivePage -> Html msg
-viewHeader activePage =
+viewHeader : ActivePage -> State -> Html msg
+viewHeader activePage state =
     nav [ class "navbar navbar-expand-lg navbar-light bg-light justify-content-between mb-3" ]
         [ div [ class "navbar-brand" ]
             [ img [ src "/favicon.ico" ] []
@@ -52,7 +53,7 @@ viewHeader activePage =
                         , attribute "aria-haspopup" "true"
                         , attribute "aria-expanded" "false"
                         ]
-                        [ text "model.user.name" ]
+                        [ text state.user.name ]
                     , div [ class "dropdown-menu dropdown-menu-right", attribute "aria-labelledby" "#navbarDropdownMenuLink" ]
                         [ a [ class "dropdown-item text-right", href "/logout" ] [ text "logout" ]
                         , a [ class "dropdown-item text-right", href "/profile" ] [ text "my profile" ]

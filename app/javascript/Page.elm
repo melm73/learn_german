@@ -7,6 +7,7 @@ import Html.Attributes exposing (..)
 import Page.Layout as Page exposing (ActivePage)
 import Page.Profile as ProfilePage
 import Page.Progress as ProgressPage
+import State exposing (State, User)
 import Url
 
 
@@ -14,7 +15,7 @@ import Url
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.application
         { init = init
@@ -30,9 +31,15 @@ main =
 -- MODEL
 
 
+type alias Flags =
+    { user : State.User
+    }
+
+
 type alias Model =
     { key : Nav.Key
     , url : Url.Url
+    , state : State
     , page : Page
     }
 
@@ -48,9 +55,15 @@ type Route
     | ProfileRoute
 
 
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model key url initialPage, Cmd.none )
+    ( { key = key
+      , url = url
+      , state = { user = flags.user }
+      , page = initialPage
+      }
+    , Cmd.none
+    )
 
 
 initialPage : Page
@@ -119,13 +132,13 @@ view model =
     , body =
         [ case model.page of
             ProfilePage subModel ->
-                ProfilePage.view subModel
-                    |> Page.layout Page.ProfilePage
+                ProfilePage.view subModel model.state
+                    |> Page.layout Page.ProfilePage model.state
                     |> Html.map ProfileMsg
 
             ProgressPage subModel ->
-                ProgressPage.view subModel
-                    |> Page.layout Page.ProgressPage
+                ProgressPage.view subModel model.state
+                    |> Page.layout Page.ProgressPage model.state
                     |> Html.map ProgressMsg
 
             NotFoundPage ->
