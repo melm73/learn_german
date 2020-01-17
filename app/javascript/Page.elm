@@ -4,6 +4,7 @@ import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Page.Layout as Page exposing (ActivePage)
 import Page.Profile as ProfilePage
 import Page.Progress as ProgressPage
 import Url
@@ -54,7 +55,7 @@ init flags url key =
 
 initialPage : Page
 initialPage =
-    NotFound
+    Profile ProfilePage.init
 
 
 
@@ -75,7 +76,7 @@ update msg model =
             case urlRequest of
                 Browser.Internal url ->
                     case url.path of
-                        "/progress" ->
+                        "/" ->
                             ( { model | page = Progress ProgressPage.init }, Nav.pushUrl model.key (Url.toString url) )
 
                         "/profile" ->
@@ -132,10 +133,12 @@ viewPage model =
     case model.page of
         Profile subModel ->
             ProfilePage.view subModel
+                |> Page.layout Page.Profile
                 |> Html.map ProfileMsg
 
         Progress subModel ->
             ProgressPage.view subModel
+                |> Page.layout Page.Progress
                 |> Html.map ProgressMsg
 
         NotFound ->
