@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
 
-  resources :users, only: [:create]
+  resources :users, only: [:create] do
+    get 'current_user_profile', on: :collection
+  end
+
   resources :progress, only: [:index]
 
   get '/translation', to: 'translations#edit'

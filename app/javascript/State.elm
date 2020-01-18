@@ -1,7 +1,7 @@
 module State exposing (..)
 
 
-type alias State =
+type alias AppState =
     { user : User
     , urls : Urls
     }
@@ -16,4 +16,5 @@ type alias Urls =
     , profileUrl : String
     , logoutUrl : String
     , progressUrl : String
+    , currentUserProfileUrl : String
     }

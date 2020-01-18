@@ -9,7 +9,7 @@ import Json.Decode as Decoder
 import Page.Layout as Page exposing (ActivePage)
 import Page.Profile as ProfilePage
 import Page.Progress as ProgressPage
-import State exposing (State, User)
+import State exposing (AppState, User)
 import Url
 
 
@@ -42,7 +42,7 @@ type alias Flags =
 type alias Model =
     { key : Nav.Key
     , url : Url.Url
-    , state : State
+    , state : AppState
     , page : Page
     }
 
@@ -58,20 +58,19 @@ type Route
     | ProfileRoute
 
 
+
+-- INIT
+
+
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( { key = key
       , url = url
       , state = { user = flags.user, urls = flags.urls }
-      , page = initialPage
+      , page = NotFoundPage
       }
     , Cmd.none
     )
-
-
-initialPage : Page
-initialPage =
-    ProfilePage ProfilePage.init
 
 
 
@@ -88,45 +87,65 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        LinkClicked urlRequest ->
+    case ( msg, model.page ) of
+        ( LinkClicked urlRequest, _ ) ->
             case urlRequest of
                 Browser.Internal url ->
                     case url.path of
-                        "/" ->
-                            ( { model | page = ProgressPage ProgressPage.init }, Nav.pushUrl model.key (Url.toString url) )
-
-                        "/profile" ->
-                            ( { model | page = ProfilePage ProfilePage.init }, Nav.pushUrl model.key (Url.toString url) )
-
                         "/logout" ->
                             ( model, logoutRequest model.state )
 
                         _ ->
-                            ( { model | page = NotFoundPage }, Nav.pushUrl model.key (Url.toString url) )
+                            ( model, Nav.pushUrl model.key (Url.toString url) )
 
                 Browser.External href ->
                     ( model, Nav.load href )
 
-        UrlChanged url ->
+        ( UrlChanged url, _ ) ->
+            changeRouteTo url model
+
+        ( HandleLogoutResponse (Ok redirectUrl), _ ) ->
+            ( model, Nav.load redirectUrl )
+
+        ( HandleLogoutResponse (Err _), _ ) ->
+            ( model, Cmd.none )
+
+        ( ProfileMsg subMsg, ProfilePage pageModel ) ->
+            let
+                _ =
+                    Debug.log "profileMsg" subMsg
+
+                ( subModel, subCmd ) =
+                    ProfilePage.update subMsg pageModel
+            in
+            ( { model | page = ProfilePage subModel }, Cmd.map ProfileMsg subCmd )
+
+        ( ProgressMsg _, _ ) ->
+            ( model, Cmd.none )
+
+        ( _, _ ) ->
+            ( model, Cmd.none )
+
+
+changeRouteTo : Url.Url -> Model -> ( Model, Cmd Msg )
+changeRouteTo url model =
+    case url.path of
+        "/profile" ->
+            let
+                ( subModel, subCmd ) =
+                    ProfilePage.init model.state
+            in
+            ( { model | url = url, page = ProfilePage subModel }
+            , Cmd.map ProfileMsg subCmd
+            )
+
+        _ ->
             ( { model | url = url }
             , Cmd.none
             )
 
-        HandleLogoutResponse (Ok redirectUrl) ->
-            ( model, Nav.load redirectUrl )
 
-        HandleLogoutResponse (Err _) ->
-            ( model, Cmd.none )
-
-        ProfileMsg _ ->
-            ( model, Cmd.none )
-
-        ProgressMsg _ ->
-            ( model, Cmd.none )
-
-
-logoutRequest : State -> Cmd Msg
+logoutRequest : AppState -> Cmd Msg
 logoutRequest state =
     Http.request
         { method = "DELETE"
@@ -162,7 +181,7 @@ view model =
     , body =
         [ case model.page of
             ProfilePage subModel ->
-                ProfilePage.view subModel model.state
+                ProfilePage.view subModel
                     |> Page.layout Page.ProfilePage model.state
                     |> Html.map ProfileMsg
 
@@ -173,5 +192,6 @@ view model =
 
             NotFoundPage ->
                 text "page not found"
+                    |> Page.layout Page.ProgressPage model.state
         ]
     }

@@ -1,7 +1,7 @@
 module Page.Progress exposing (Model, Msg, init, view)
 
 import Html exposing (..)
-import State exposing (State)
+import State exposing (AppState)
 
 
 type Msg
@@ -21,7 +21,7 @@ init =
     }
 
 
-view : Model -> State -> Html Msg
+view : Model -> AppState -> Html Msg
 view model state =
     div []
         [ h2 [] [ text model.pageTitle ]

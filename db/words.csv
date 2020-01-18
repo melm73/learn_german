@@ -181,7 +181,7 @@ article,german,level,category,plural,chapter,duolingo
 ,falsch,A1,Adjective,,,
 ,faul,A1,Adjective,,,
 ,fertig,A1,Adjective,,,
-,frei,A1,Adjective,,1.5,
+,frei,A1,Adjective,,1.5,2
 ,fremd,A1,Adjective,,,
 ,früh,A1,Adjective,,,
 ,fünf,A1,Number,,1.1,
@@ -195,7 +195,7 @@ article,german,level,category,plural,chapter,duolingo
 ,gold,A1,Adjective,,,
 ,golden,A1,Adjective,,1.3,
 ,grau,A1,Adjective,,1.3,
-,groß,A1,Adjective,,1.3,
+,groß,A1,Adjective,,1.3,2
 ,grün,A1,Adjective,,1.3,
 ,gültig,A1,Adjective,,,
 ,günstig,A1,Adjective,,,
@@ -213,15 +213,15 @@ article,german,level,category,plural,chapter,duolingo
 ,kaputt,A1,Adjective,,1.2,
 ,kein,A1,Adjective,,1.3,
 ,klar,A1,Adjective,,1.5,1
-,klein,A1,Adjective,,1.3,
+,klein,A1,Adjective,,1.3,2
 ,krank,A1,Adjective,,1.2,
 ,kulturell,A1,Adjective,,,
-,kurz,A1,Adjective,,,
-,lang,A1,Adjective,,,
-,laut,A1,Adjective,,1.3,
+,kurz,A1,Adjective,,,2
+,lang,A1,Adjective,,,2
+,laut,A1,Adjective,,1.3,2
 ,ledig,A1,Adjective,,,
-,leicht,A1,Adjective,,1.7,
-,leise,A1,Adjective,,,
+,leicht,A1,Adjective,,1.7,2
+,leise,A1,Adjective,,,2
 ,letzt,A1,Adjective,,,
 ,lieb,A1,Adjective,,1.3,
 ,logisch,A1,Adjective,,,
@@ -239,9 +239,10 @@ article,german,level,category,plural,chapter,duolingo
 ,pünktlich,A1,Adjective,,,
 ,rosa,A1,Adjective,,1.3,
 ,rot,A1,Adjective,,1.3,
-,ruhig,A1,Adjective,,,
+,ruhig,A1,Adjective,,,2
+,rund,,Adjective,,,2
 ,sauber,A1,Adjective,,,
-,schlecht,A1,Adjective,,1.4,
+,schlecht,A1,Adjective,,1.4,2
 ,schlimm,A1,Adjective,,,
 ,schnell,A1,Adjective,,1.4,
 ,schön,A1,Adjective,,1.4,
@@ -252,7 +253,7 @@ article,german,level,category,plural,chapter,duolingo
 ,sechste,A1,Adjective,,,
 ,sechzehn,A1,Number,,1.2,
 ,sechzig,A1,Number,,1.2,
-,stark,A1,Adjective,,1.3,
+,stark,A1,Adjective,,1.3,2
 ,teuer,A1,Adjective,,1.4,
 ,tragend,A1,Adjective,,,
 ,verheiratet,A1,Adjective,,,
@@ -634,7 +635,7 @@ das,Ticket,A1,Noun,,,
 der,Tisch,A1,Noun,,,
 die,Tochter,A1,Noun,Töchter,1.3,
 die,Toilette,A1,Noun,,,
-die,Tomate,A1,Noun,Tomaten,1.6,
+die,Tomate,A1,Noun,Tomaten,1.6,2
 die,Treppe,A1,Noun,,,
 das,T-Shirt,A1,Noun,,,
 die,Uhr,A1,Noun,,1.7,
@@ -858,6 +859,7 @@ der,Zoll,A1,Noun,,,
 ,nervig,A2,Adjective,,,
 ,nervös,A2,Adjective,,,
 ,nett,A2,Adjective,,1.1,
+,normal,,Adjective,,,2
 ,notwendig,A2,Adjective,,,
 ,nützlich,A2,Adjective,,,
 ,offen,A2,Adjective,,,
@@ -877,7 +879,7 @@ der,Zoll,A1,Noun,,,
 ,schick,A2,Adjective,,,
 ,schmutzig,A2,Adjective,,,
 ,schriftlich,A2,Adjective,,,
-,schwach,A2,Adjective,,1.4,
+,schwach,A2,Adjective,,1.4,2
 ,schwanger,A2,Adjective,,,
 ,schwierig,A2,Adjective,,1.7,
 ,selten,A2,Adjective,,,
@@ -888,7 +890,7 @@ der,Zoll,A1,Noun,,,
 ,süß,A2,Adjective,,1.3,1
 ,sympathisch,A2,Adjective,,,
 ,tief,A2,Adjective,,,
-,toll,A2,Adjective,,1.1,
+,toll,A2,Adjective,,1.1,2
 ,tot,A2,Adjective,,,
 ,total,A2,Adjective,,1.2,
 ,traurig,A2,Adjective,,1.2,
@@ -1101,7 +1103,7 @@ das,Medikament,A2,Noun,,,
 das,Meer,A2,Noun,,,
 das,Meerschweinchen,,Noun,Meerschweinchen,1.4,
 die,Meinung,A2,Noun,,,
-der,Mensch,A2,Noun,,,
+der,Mensch,A2,Noun,,,2
 die,Messe,A2,Noun,,,
 das,Messer,A2,Noun,,,
 das,Mineral,A2,Noun,,,
@@ -1737,7 +1739,7 @@ das,Gesamt,B1,Noun,,,
 ,passiv,B1,Adjective,,,
 ,pauschal,B1,Adjective,,,
 ,peinlich,B1,Adjective,,,
-,perfekt,B1,Adjective,,,
+,perfekt,B1,Adjective,,,2
 ,persönlich,B1,Adjective,,,
 ,pflanzlich,B1,Adjective,,,
 ,politisch,B1,Adjective,,,
@@ -4521,7 +4523,7 @@ das,Spiegelei,B2,Noun,,,
 der,Spieß,B2,Noun,,,
 der,Spieß,B2,Noun,,,
 der,Spinat,B2,Noun,,,
-die,Spinne,B2,Noun,Spinnen,1.4,
+die,Spinne,B2,Noun,Spinnen,1.4,1
 der,Spitzenplatz,B2,Noun,,,
 der,Spitzname,B2,Noun,,,
 die,Spontanität,B2,Noun,,,

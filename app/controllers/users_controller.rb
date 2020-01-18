@@ -20,6 +20,14 @@ class UsersController < ApplicationController
     render :new
   end
 
+  def current_user_profile
+    if logged_in?
+      render json: { name: current_user.name, email: current_user.email }
+    else
+      render json: 'Access Denied', status: :unauthorized
+    end
+  end
+
   def show
     if logged_in?
       menu_props(current_page: 'profile')

@@ -2,7 +2,7 @@ module Page.Layout exposing (..)
 
 import Html exposing (Html, a, button, div, footer, img, li, nav, span, text, ul)
 import Html.Attributes exposing (attribute, class, classList, href, id, src, type_)
-import State exposing (State)
+import State exposing (AppState)
 
 
 type ActivePage
@@ -11,15 +11,15 @@ type ActivePage
     | ReviewPage
 
 
-layout : ActivePage -> State -> Html msg -> Html msg
+layout : ActivePage -> AppState -> Html msg -> Html msg
 layout page state content =
-    div []
+    div [ class "container" ]
         [ viewHeader page state
         , div [] [ content ]
         ]
 
 
-viewHeader : ActivePage -> State -> Html msg
+viewHeader : ActivePage -> AppState -> Html msg
 viewHeader activePage state =
     nav [ class "navbar navbar-expand-lg navbar-light bg-light justify-content-between mb-3" ]
         [ div [ class "navbar-brand" ]
