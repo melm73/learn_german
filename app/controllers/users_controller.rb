@@ -28,24 +28,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def show
-    if logged_in?
-      menu_props(current_page: 'profile')
-
-      @user_props = {
-        user: {
-          name: current_user.name,
-          email: current_user.email,
-        },
-        urls: { updateUserUrl: users_path },
-      }
-
-      render :show
-    else
-      redirect_to login_path
-    end
-  end
-
   private
 
   def user_params
