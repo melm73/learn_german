@@ -13,7 +13,6 @@ type alias User =
 
 type alias Urls =
     { csrfToken : String
-    , profileUrl : String
     , logoutUrl : String
     , progressUrl : String
     , currentUserProfileUrl : String

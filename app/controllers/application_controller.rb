@@ -22,7 +22,6 @@ class ApplicationController < ActionController::Base
       currentPage: current_page,
       urls: {
         logoutUrl: logout_path,
-        profileUrl: profile_path,
         progressUrl: progress_index_path,
         currentUserProfileUrl: current_user_profile_users_path,
       },
