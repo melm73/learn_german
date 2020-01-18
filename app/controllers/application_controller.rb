@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
         logoutUrl: logout_path,
         progressUrl: progress_index_path,
         currentUserProfileUrl: current_user_profile_users_path,
+        wordsUrl: words_path,
       },
     }
   end

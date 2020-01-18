@@ -64,12 +64,16 @@ type Route
 
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
+    let
+        state =
+            { user = flags.user, urls = flags.urls, words = [] }
+    in
     ( { key = key
       , url = url
-      , state = { user = flags.user, urls = flags.urls }
+      , state = state
       , page = NotFoundPage
       }
-    , Cmd.none
+    , getWordsRequest state
     )
 
 
@@ -83,6 +87,7 @@ type Msg
     | ProfileMsg ProfilePage.Msg
     | ProgressMsg ProgressPage.Msg
     | HandleLogoutResponse (Result Http.Error String)
+    | HandleWordResponse (Result Http.Error (List State.Word))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -110,11 +115,21 @@ update msg model =
         ( HandleLogoutResponse (Err _), _ ) ->
             ( model, Cmd.none )
 
+        ( HandleWordResponse (Ok words), _ ) ->
+            let
+                oldState =
+                    model.state
+
+                newState =
+                    { oldState | words = words }
+            in
+            ( { model | state = newState }, Cmd.none )
+
+        ( HandleWordResponse (Err _), _ ) ->
+            ( model, Cmd.none )
+
         ( ProfileMsg subMsg, ProfilePage pageModel ) ->
             let
-                _ =
-                    Debug.log "profileMsg" subMsg
-
                 ( subModel, subCmd ) =
                     ProfilePage.update subMsg pageModel
             in
@@ -142,6 +157,50 @@ changeRouteTo url model =
         _ ->
             ( { model | url = url }
             , Cmd.none
+            )
+
+
+getWordsRequest : AppState -> Cmd Msg
+getWordsRequest state =
+    Http.request
+        { method = "GET"
+        , headers = [ Http.header "X-CSRF-Token" state.urls.csrfToken ]
+        , url = state.urls.wordsUrl
+        , body = Http.emptyBody
+        , expect = Http.expectJson HandleWordResponse (Decoder.list wordDecoder)
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
+wordDecoder : Decoder.Decoder State.Word
+wordDecoder =
+    Decoder.map6 State.Word
+        (Decoder.field "id" Decoder.string)
+        (Decoder.field "german" Decoder.string)
+        (Decoder.field "article" (Decoder.nullable articleDecoder))
+        (Decoder.field "category" Decoder.string)
+        (Decoder.field "plural" (Decoder.nullable Decoder.string))
+        (Decoder.field "level" (Decoder.nullable Decoder.int))
+
+
+articleDecoder : Decoder.Decoder State.Article
+articleDecoder =
+    Decoder.string
+        |> Decoder.andThen
+            (\str ->
+                case str of
+                    "der" ->
+                        Decoder.succeed State.Der
+
+                    "die" ->
+                        Decoder.succeed State.Die
+
+                    "das" ->
+                        Decoder.succeed State.Das
+
+                    somethingElse ->
+                        Decoder.fail <| "Unknown article: " ++ somethingElse
             )
 
 

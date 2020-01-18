@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     get 'current_user_profile', on: :collection
   end
 
+  resources :words, only: [:index]
   resources :progress, only: [:index]
 
   get '/translation', to: 'translations#edit'
