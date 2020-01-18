@@ -4,6 +4,8 @@ import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Http
+import Json.Decode as Decoder
 import Page.Layout as Page exposing (ActivePage)
 import Page.Profile as ProfilePage
 import Page.Progress as ProgressPage
@@ -33,6 +35,7 @@ main =
 
 type alias Flags =
     { user : State.User
+    , urls : State.Urls
     }
 
 
@@ -59,7 +62,7 @@ init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( { key = key
       , url = url
-      , state = { user = flags.user }
+      , state = { user = flags.user, urls = flags.urls }
       , page = initialPage
       }
     , Cmd.none
@@ -80,6 +83,7 @@ type Msg
     | UrlChanged Url.Url
     | ProfileMsg ProfilePage.Msg
     | ProgressMsg ProgressPage.Msg
+    | HandleLogoutResponse (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -95,6 +99,9 @@ update msg model =
                         "/profile" ->
                             ( { model | page = ProfilePage ProfilePage.init }, Nav.pushUrl model.key (Url.toString url) )
 
+                        "/logout" ->
+                            ( model, logoutRequest model.state )
+
                         _ ->
                             ( { model | page = NotFoundPage }, Nav.pushUrl model.key (Url.toString url) )
 
@@ -106,11 +113,34 @@ update msg model =
             , Cmd.none
             )
 
+        HandleLogoutResponse (Ok redirectUrl) ->
+            ( model, Nav.load redirectUrl )
+
+        HandleLogoutResponse (Err _) ->
+            ( model, Cmd.none )
+
         ProfileMsg _ ->
             ( model, Cmd.none )
 
         ProgressMsg _ ->
             ( model, Cmd.none )
+
+
+logoutRequest : State -> Cmd Msg
+logoutRequest state =
+    Http.request
+        { method = "DELETE"
+        , headers = [ Http.header "X-CSRF-Token" state.urls.csrfToken ]
+        , url = state.urls.logoutUrl
+        , body = Http.emptyBody
+        , expect = Http.expectJson HandleLogoutResponse redirectDecoder
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
+redirectDecoder =
+    Decoder.field "redirectTo" Decoder.string
 
 
 
