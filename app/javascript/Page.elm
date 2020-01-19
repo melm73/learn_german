@@ -66,7 +66,7 @@ init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         state =
-            { user = flags.user, urls = flags.urls, words = [] }
+            { user = flags.user, urls = flags.urls, words = [], filter = State.initialFilter }
     in
     ( { key = key
       , url = url
@@ -135,8 +135,70 @@ update msg model =
             in
             ( { model | page = ProfilePage subModel }, Cmd.map ProfileMsg subCmd )
 
-        ( ProgressMsg _, _ ) ->
-            ( model, Cmd.none )
+        ( ProgressMsg subMsg, ProgressPage pageModel ) ->
+            let
+                ( subModel, subCmd ) =
+                    ProgressPage.update subMsg pageModel
+            in
+            case subMsg of
+                ProgressPage.SearchStringChanged searchText ->
+                    let
+                        newFilter =
+                            { searchText = searchText
+                            , pageNo = 1
+                            , chapter = model.state.filter.chapter
+                            }
+
+                        oldState =
+                            model.state
+
+                        newState =
+                            { oldState | filter = newFilter }
+                    in
+                    ( { model | page = ProgressPage subModel, state = newState }, Cmd.map ProgressMsg subCmd )
+
+                ProgressPage.ClearSearchText ->
+                    let
+                        newFilter =
+                            { searchText = ""
+                            , pageNo = 1
+                            , chapter = model.state.filter.chapter
+                            }
+
+                        oldState =
+                            model.state
+
+                        newState =
+                            { oldState | filter = newFilter }
+                    in
+                    ( { model | page = ProgressPage subModel, state = newState }, Cmd.map ProgressMsg subCmd )
+
+                ProgressPage.SelectChapterOption option ->
+                    let
+                        selectedChapter =
+                            case option of
+                                "Any" ->
+                                    Nothing
+
+                                _ ->
+                                    Just option
+
+                        newFilter =
+                            { searchText = model.state.filter.searchText
+                            , pageNo = 1
+                            , chapter = selectedChapter
+                            }
+
+                        oldState =
+                            model.state
+
+                        newState =
+                            { oldState | filter = newFilter }
+                    in
+                    ( { model | page = ProgressPage subModel, state = newState }, Cmd.map ProgressMsg subCmd )
+
+                _ ->
+                    ( { model | page = ProgressPage subModel }, Cmd.map ProgressMsg subCmd )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -152,6 +214,15 @@ changeRouteTo url model =
             in
             ( { model | url = url, page = ProfilePage subModel }
             , Cmd.map ProfileMsg subCmd
+            )
+
+        "/" ->
+            let
+                ( subModel, subCmd ) =
+                    ProgressPage.init model.state
+            in
+            ( { model | url = url, page = ProgressPage subModel }
+            , Cmd.map ProgressMsg subCmd
             )
 
         _ ->

@@ -5,6 +5,7 @@ type alias AppState =
     { user : User
     , urls : Urls
     , words : List Word
+    , filter : Filter
     }
 
 
@@ -15,9 +16,9 @@ type alias User =
 type alias Urls =
     { csrfToken : String
     , logoutUrl : String
-    , progressUrl : String
-    , currentUserProfileUrl : String
     , wordsUrl : String
+    , currentUserProfileUrl : String
+    , progressUrl : String
     }
 
 
@@ -35,3 +36,21 @@ type Article
     = Der
     | Die
     | Das
+
+
+type alias Filter =
+    { pageNo : Int
+    , searchText : String
+    , chapter : Maybe String
+    }
+
+
+
+-- INIT
+
+
+initialFilter =
+    { pageNo = 0
+    , searchText = ""
+    , chapter = Nothing
+    }
