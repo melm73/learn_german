@@ -1,10 +1,13 @@
 module State exposing (..)
 
+-- TYPES
+
 
 type alias AppState =
     { user : User
     , urls : Urls
     , words : List Word
+    , filteredWords : List Word
     , filter : Filter
     }
 
@@ -41,7 +44,7 @@ type Article
 type alias Filter =
     { pageNo : Int
     , searchText : String
-    , chapter : Maybe String
+    , level : Maybe Int
     }
 
 
@@ -52,5 +55,86 @@ type alias Filter =
 initialFilter =
     { pageNo = 0
     , searchText = ""
-    , chapter = Nothing
+    , level = Nothing
     }
+
+
+
+-- FILTERS
+
+
+clearFilterSearchText : AppState -> AppState
+clearFilterSearchText state =
+    let
+        newFilter =
+            { searchText = ""
+            , pageNo = 1
+            , level = state.filter.level
+            }
+    in
+    { state | filter = newFilter, filteredWords = filteredWords newFilter state.words }
+
+
+setFilterSearchText : AppState -> String -> AppState
+setFilterSearchText state searchText =
+    let
+        newFilter =
+            { searchText = searchText
+            , pageNo = 1
+            , level = state.filter.level
+            }
+    in
+    { state | filter = newFilter, filteredWords = filteredWords newFilter state.words }
+
+
+setFilterLevel : AppState -> String -> AppState
+setFilterLevel state option =
+    let
+        selectedLevel =
+            case option of
+                "Any" ->
+                    Nothing
+
+                _ ->
+                    String.toInt (Maybe.withDefault "0" (Just option))
+
+        newFilter =
+            { searchText = state.filter.searchText
+            , pageNo = 1
+            , level = selectedLevel
+            }
+    in
+    { state | filter = newFilter, filteredWords = filteredWords newFilter state.words }
+
+
+
+-- WORDS
+
+
+filteredWords : Filter -> List Word -> List Word
+filteredWords filter words =
+    let
+        levelWords =
+            case filter.level of
+                Nothing ->
+                    words
+
+                Just level ->
+                    List.filter (isInLevel level) words
+    in
+    case filter.searchText of
+        "" ->
+            levelWords
+
+        searchString ->
+            List.filter (\w -> String.contains (String.toLower searchString) (String.toLower w.german)) levelWords
+
+
+isInLevel : Int -> Word -> Bool
+isInLevel level word =
+    case word.level of
+        Nothing ->
+            False
+
+        Just wordLevel ->
+            wordLevel == level

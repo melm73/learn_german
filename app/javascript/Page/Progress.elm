@@ -45,7 +45,7 @@ type Msg
     = HandleProgressResponse (Result Http.Error (List Progress))
     | SearchStringChanged String
     | ClearSearchText
-    | SelectChapterOption String
+    | SelectLevelOption String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -63,7 +63,7 @@ update msg model =
         ClearSearchText ->
             ( model, Cmd.none )
 
-        SelectChapterOption _ ->
+        SelectLevelOption _ ->
             ( model, Cmd.none )
 
 
@@ -212,12 +212,12 @@ searchView : Model -> AppState -> Html Msg
 searchView model state =
     form [ class "search-form form-inline float-lg-right" ]
         [ div [ class "form-group pr-3" ]
-            [ label [ class "pr-2" ] [ text "Chapter" ]
-            , select [ class "form-control", onInput SelectChapterOption ]
-                [ option [ selected (state.filter.chapter == Nothing), value "Any" ] [ text "Any" ]
-                , option [ selected (state.filter.chapter == Just "1"), value "1" ] [ text "1" ]
-                , option [ selected (state.filter.chapter == Just "2"), value "2" ] [ text "2" ]
-                , option [ selected (state.filter.chapter == Just "3"), value "3" ] [ text "3" ]
+            [ label [ class "pr-2" ] [ text "Level" ]
+            , select [ class "form-control", onInput SelectLevelOption ]
+                [ option [ selected (state.filter.level == Nothing), value "Any" ] [ text "Any" ]
+                , option [ selected (state.filter.level == Just 1), value "1" ] [ text "1" ]
+                , option [ selected (state.filter.level == Just 2), value "2" ] [ text "2" ]
+                , option [ selected (state.filter.level == Just 3), value "3" ] [ text "3" ]
                 ]
             ]
         , div [ class "form-group position-relative" ]
