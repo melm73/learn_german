@@ -148,6 +148,9 @@ update msg model =
                 ProgressPage.SelectLevelOption option ->
                     ( { model | page = ProgressPage subModel, state = State.setFilterLevel model.state option }, Cmd.map ProgressMsg subCmd )
 
+                ProgressPage.PaginationClicked direction ->
+                    ( { model | page = ProgressPage subModel, state = State.setPagination model.state direction }, Cmd.map ProgressMsg subCmd )
+
                 _ ->
                     ( { model | page = ProgressPage subModel }, Cmd.map ProgressMsg subCmd )
 

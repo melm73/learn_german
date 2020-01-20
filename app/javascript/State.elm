@@ -42,6 +42,13 @@ type alias Filter =
     }
 
 
+type PaginationDirection
+    = First
+    | Previous
+    | Next
+    | Last
+
+
 
 -- INIT
 
@@ -106,8 +113,40 @@ setWords state words =
     { state | words = words, filteredWords = filteredWords state.filter words }
 
 
+setPagination : AppState -> PaginationDirection -> AppState
+setPagination state direction =
+    let
+        newPageNo =
+            case direction of
+                First ->
+                    1
 
--- WORDS
+                Previous ->
+                    state.filter.pageNo - 1
+
+                Next ->
+                    state.filter.pageNo + 1
+
+                Last ->
+                    numberOfPages state
+
+        newFilter =
+            { searchText = state.filter.searchText
+            , pageNo = newPageNo
+            , level = state.filter.level
+            }
+    in
+    { state | filter = newFilter, filteredWords = filteredWords newFilter state.words }
+
+
+progressesPerPage : Int
+progressesPerPage =
+    20
+
+
+numberOfPages : AppState -> Int
+numberOfPages state =
+    ceiling (toFloat (List.length state.filteredWords) / toFloat progressesPerPage)
 
 
 filteredWords : Filter -> List Word -> List Word

@@ -1,9 +1,10 @@
 module Page.Progress exposing (..)
 
+import Array
 import Dict exposing (Dict)
 import Functions exposing (fullWord)
-import Html exposing (Html, a, div, form, h1, input, label, option, select, span, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, href, placeholder, scope, selected, type_, value)
+import Html exposing (Html, a, button, div, form, h1, input, label, li, nav, option, select, span, table, tbody, td, text, th, thead, tr, ul)
+import Html.Attributes exposing (class, classList, href, placeholder, scope, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as Decoder
@@ -47,6 +48,7 @@ type Msg
     | SearchStringChanged String
     | ClearSearchText
     | SelectLevelOption String
+    | PaginationClicked State.PaginationDirection
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -65,6 +67,9 @@ update msg model =
             ( model, Cmd.none )
 
         SelectLevelOption _ ->
+            ( model, Cmd.none )
+
+        PaginationClicked _ ->
             ( model, Cmd.none )
 
 
@@ -112,8 +117,7 @@ view model state =
                     ]
                 , div [ class "col-sm-8" ] [ searchView model state ]
                 ]
-
-            --, paginationView model
+            , paginationView model state
             , table [ class "table table-striped" ]
                 [ thead [ class "thead-dark" ]
                     [ tr []
@@ -123,12 +127,24 @@ view model state =
                         , th [ scope "col", class "text-center" ] [ text "REVIEWS" ]
                         ]
                     ]
-                , tbody [] (List.map (rowView model.progresses) state.filteredWords)
+                , tbody [] (List.map (rowView model.progresses) (paginated state state.filteredWords))
                 ]
             ]
         , div [ class "col-lg-3" ]
             [ ProgressPieChart.view (progressStats model state) ]
         ]
+
+
+paginated : AppState -> List State.Word -> List State.Word
+paginated state words =
+    let
+        sliceFrom =
+            (state.filter.pageNo - 1) * State.progressesPerPage
+
+        sliceTo =
+            state.filter.pageNo * State.progressesPerPage
+    in
+    Array.toList (Array.slice sliceFrom sliceTo (Array.fromList words))
 
 
 sortView : Html Msg
@@ -177,12 +193,6 @@ rowView progresses word =
         , td [ class "text-center align-middle" ] [ levelView level ]
         , td [] (reviewView progress)
         ]
-
-
-
---a [ class "nav-link", href "/" ] [ text "Progress" ] ]
---/translation?word_id=f753c597-083e-4934-a18d-3d21d2f2658c
-----onClick (ProgressClicked progress.wordId) ]
 
 
 reviewView : Maybe Progress -> List (Html Msg)
@@ -281,46 +291,50 @@ doubleChevronRight =
     '»'
 
 
+paginationView : Model -> AppState -> Html Msg
+paginationView model state =
+    nav []
+        [ ul [ class "pagination" ]
+            [ paginationFirstView state
+            , paginationPreviousView state
+            , paginationPageView model state
+            , paginationNextView model state
+            , paginationLastView model state
+            ]
+        ]
 
---paginationView : Model -> Html Msg
---paginationView model =
---    nav []
---        [ ul [ class "pagination" ]
---            [ paginationFirstView model
---            , paginationPreviousView model
---            , paginationPageView model
---            , paginationNextView model
---            , paginationLastView model
---            ]
---        ]
---paginationFirstView : Model -> Html Msg
---paginationFirstView model =
---    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == 1 ) ] ]
---        [ button [ class "page-link", onClick (PaginationClicked First) ] [ text (String.fromChar doubleChevronLeft) ] ]
---paginationPreviousView : Model -> Html Msg
---paginationPreviousView model =
---    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == 1 ) ] ]
---        [ button [ class "page-link", onClick (PaginationClicked Previous) ] [ text (String.fromChar singleChevronLeft) ] ]
---paginationPageView : Model -> Html Msg
---paginationPageView model =
---    li [ class "page-item disabled" ] [ button [ class "page-link" ] [ text ("Page " ++ String.fromInt model.filter.pageNo ++ " of " ++ String.fromInt (numberOfPages model)) ] ]
---paginationNextView : Model -> Html Msg
---paginationNextView model =
---    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == numberOfPages model ) ] ]
---        [ button [ class "page-link", onClick (PaginationClicked Next) ] [ text (String.fromChar singleChevronRight) ] ]
---paginationLastView : Model -> Html Msg
---paginationLastView model =
---    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == numberOfPages model ) ] ]
---        [ button [ class "page-link", onClick (PaginationClicked Last) ] [ text (String.fromChar doubleChevronRight) ] ]
---viewProgresses : Model -> AppState -> List Progress
---viewProgresses model =
---    let
---        sliceFrom =
---            (model.filter.pageNo - 1) * progressesPerPage
---        sliceTo =
---            model.filter.pageNo * progressesPerPage
---    in
---    Array.toList (Array.slice sliceFrom sliceTo (Array.fromList model.filteredProgresses))
+
+paginationFirstView : AppState -> Html Msg
+paginationFirstView state =
+    li [ classList [ ( "page-item", True ), ( "disabled", state.filter.pageNo == 1 ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked State.First) ] [ text (String.fromChar doubleChevronLeft) ] ]
+
+
+paginationPreviousView : AppState -> Html Msg
+paginationPreviousView state =
+    li [ classList [ ( "page-item", True ), ( "disabled", state.filter.pageNo == 1 ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked State.Previous) ] [ text (String.fromChar singleChevronLeft) ] ]
+
+
+paginationPageView : Model -> AppState -> Html Msg
+paginationPageView model state =
+    li [ class "page-item disabled" ]
+        [ button [ class "page-link" ] [ text ("Page " ++ String.fromInt state.filter.pageNo ++ " of " ++ String.fromInt (State.numberOfPages state)) ] ]
+
+
+paginationNextView : Model -> AppState -> Html Msg
+paginationNextView model state =
+    li [ classList [ ( "page-item", True ), ( "disabled", state.filter.pageNo == State.numberOfPages state ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked State.Next) ] [ text (String.fromChar singleChevronRight) ] ]
+
+
+paginationLastView : Model -> AppState -> Html Msg
+paginationLastView model state =
+    li [ classList [ ( "page-item", True ), ( "disabled", state.filter.pageNo == State.numberOfPages state ) ] ]
+        [ button [ class "page-link", onClick (PaginationClicked State.Last) ] [ text (String.fromChar doubleChevronRight) ] ]
+
+
+
 -- STATS
 
 

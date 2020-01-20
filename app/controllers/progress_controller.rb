@@ -9,13 +9,32 @@ class ProgressController < ApplicationController
         },
       }
 
-      render :index
+      respond_to do |format|
+        format.html { render :index }
+        format.json { render json: serialize_progresses }
+      end
     else
       redirect_to login_path
     end
   end
 
   private
+
+  def serialize_progresses
+    Translation
+      .where(user_id: current_user.id)
+      .map do |translation|
+        {
+          wordId: translation.word_id,
+          translated: translation.present?,
+          sentence: translation&.sentence,
+          level: translation&.level || 0,
+          timesReviewed: translation&.review_count || 0,
+          lastReviewed: format_date(translation&.last_reviewed),
+          learnt: translation&.learnt || false,
+        }
+      end
+  end
 
   def generate_progresses
     Word.all.map do |word|
