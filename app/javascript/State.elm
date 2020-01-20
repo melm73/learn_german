@@ -28,17 +28,11 @@ type alias Urls =
 type alias Word =
     { id : String
     , german : String
-    , article : Maybe Article
+    , article : Maybe String
     , category : String
     , plural : Maybe String
     , level : Maybe Int
     }
-
-
-type Article
-    = Der
-    | Die
-    | Das
 
 
 type alias Filter =
@@ -53,14 +47,14 @@ type alias Filter =
 
 
 initialFilter =
-    { pageNo = 0
+    { pageNo = 1
     , searchText = ""
     , level = Nothing
     }
 
 
 
--- FILTERS
+-- SETTERS
 
 
 clearFilterSearchText : AppState -> AppState
@@ -105,6 +99,11 @@ setFilterLevel state option =
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words }
+
+
+setWords : AppState -> List Word -> AppState
+setWords state words =
+    { state | words = words, filteredWords = filteredWords state.filter words }
 
 
 

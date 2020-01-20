@@ -3,10 +3,11 @@ module Page.Progress exposing (..)
 import Dict exposing (Dict)
 import Functions exposing (fullWord)
 import Html exposing (Html, a, div, form, h1, input, label, option, select, span, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, placeholder, scope, selected, type_, value)
+import Html.Attributes exposing (class, href, placeholder, scope, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as Decoder
+import ProgressPieChart
 import State exposing (AppState)
 
 
@@ -113,7 +114,7 @@ view model state =
                 ]
 
             --, paginationView model
-            , table [ class "table table-hover" ]
+            , table [ class "table table-striped" ]
                 [ thead [ class "thead-dark" ]
                     [ tr []
                         [ th [ scope "col" ] [ text "GERMAN", sortView ]
@@ -122,12 +123,11 @@ view model state =
                         , th [ scope "col", class "text-center" ] [ text "REVIEWS" ]
                         ]
                     ]
-                , tbody [] [] --(List.map rowView (viewProgresses model))
+                , tbody [] (List.map (rowView model.progresses) state.filteredWords)
                 ]
             ]
-
-        --, div [ class "col-lg-3" ]
-        --    [ ProgressPieChart.view (progressStats model) ]
+        , div [ class "col-lg-3" ]
+            [ ProgressPieChart.view (progressStats model state) ]
         ]
 
 
@@ -146,37 +146,64 @@ sortDown =
     '▼'
 
 
-rowView : Progress -> Html Msg
-rowView progress =
-    tr [] []
+rowView : Dict String Progress -> State.Word -> Html Msg
+rowView progresses word =
+    let
+        progress =
+            Dict.get word.id progresses
+
+        sentence =
+            case progress of
+                Nothing ->
+                    ""
+
+                Just actualProgress ->
+                    Maybe.withDefault "" actualProgress.sentence
+
+        level =
+            case progress of
+                Nothing ->
+                    0
+
+                Just actualProgress ->
+                    actualProgress.level
+    in
+    tr []
+        [ td []
+            [ div [ class "lead" ] [ a [ href ("/translation?wordId=" ++ word.id) ] [ text (fullWord word.article word.german) ] ]
+            , div [ class "text-muted" ] [ text sentence ]
+            ]
+        , td [ class "text-center align-middle" ] [ text word.category ]
+        , td [ class "text-center align-middle" ] [ levelView level ]
+        , td [] (reviewView progress)
+        ]
 
 
 
+--a [ class "nav-link", href "/" ] [ text "Progress" ] ]
+--/translation?word_id=f753c597-083e-4934-a18d-3d21d2f2658c
 ----onClick (ProgressClicked progress.wordId) ]
---[ td []
---    [ div [ class "lead" ] [ text (fullWord progress.article progress.german) ]
---    , div [ class "text-muted" ] [ text (Maybe.withDefault "" progress.sentence) ]
---    ]
---, td [ class "text-center align-middle" ] [ text progress.category ]
---, td [ class "text-center align-middle" ] [ levelView progress.level ]
---, td [] (reviewView progress)
---]
 
 
-reviewView : Progress -> List (Html Msg)
+reviewView : Maybe Progress -> List (Html Msg)
 reviewView progress =
-    [ div [ class "text-center align-middle" ]
-        [ case progress.timesReviewed of
-            0 ->
-                text ""
+    case progress of
+        Nothing ->
+            [ text "" ]
 
-            _ ->
-                text (String.fromInt progress.timesReviewed)
-        ]
-    , div [ class "text-center align-middle text-muted" ]
-        [ text (Maybe.withDefault "" progress.lastReviewed)
-        ]
-    ]
+        Just actualProgress ->
+            [ div [ class "text-center align-middle" ]
+                [ case actualProgress.timesReviewed of
+                    0 ->
+                        text ""
+
+                    _ ->
+                        text (String.fromInt actualProgress.timesReviewed)
+                ]
+            , div [ class "text-center align-middle text-muted" ]
+                [ text (Maybe.withDefault "" actualProgress.lastReviewed)
+                ]
+            ]
 
 
 levelView : Int -> Html Msg
@@ -285,3 +312,38 @@ doubleChevronRight =
 --paginationLastView model =
 --    li [ classList [ ( "page-item", True ), ( "disabled", model.filter.pageNo == numberOfPages model ) ] ]
 --        [ button [ class "page-link", onClick (PaginationClicked Last) ] [ text (String.fromChar doubleChevronRight) ] ]
+--viewProgresses : Model -> AppState -> List Progress
+--viewProgresses model =
+--    let
+--        sliceFrom =
+--            (model.filter.pageNo - 1) * progressesPerPage
+--        sliceTo =
+--            model.filter.pageNo * progressesPerPage
+--    in
+--    Array.toList (Array.slice sliceFrom sliceTo (Array.fromList model.filteredProgresses))
+-- STATS
+
+
+progressStats : Model -> AppState -> ProgressPieChart.Stats
+progressStats model state =
+    let
+        filteredProgresses =
+            Dict.filter (\wordId -> \progress -> List.any (\word -> word.id == wordId) state.filteredWords) model.progresses
+
+        totalCount =
+            List.length state.filteredWords
+
+        learntCount =
+            Dict.size (Dict.filter (\wordId -> \progress -> progress.learnt) filteredProgresses)
+
+        translatedCount =
+            Dict.size (Dict.filter (\wordId -> \progress -> progress.translated) filteredProgresses) - learntCount
+
+        notSeenCount =
+            totalCount - translatedCount - learntCount
+    in
+    { percentageLearnt = toFloat learntCount / toFloat totalCount * 100
+    , percentageTranslated = toFloat translatedCount / toFloat totalCount * 100
+    , percentageNotSeen = toFloat notSeenCount / toFloat totalCount * 100
+    , numberOfWords = totalCount
+    }

@@ -121,14 +121,7 @@ update msg model =
             ( model, Cmd.none )
 
         ( HandleWordResponse (Ok words), _ ) ->
-            let
-                oldState =
-                    model.state
-
-                newState =
-                    { oldState | words = words }
-            in
-            ( { model | state = newState }, Cmd.none )
+            ( { model | state = State.setWords model.state words }, Cmd.none )
 
         ( HandleWordResponse (Err _), _ ) ->
             ( model, Cmd.none )
@@ -207,30 +200,10 @@ wordDecoder =
     Decoder.map6 State.Word
         (Decoder.field "id" Decoder.string)
         (Decoder.field "german" Decoder.string)
-        (Decoder.field "article" (Decoder.nullable articleDecoder))
+        (Decoder.field "article" (Decoder.nullable Decoder.string))
         (Decoder.field "category" Decoder.string)
         (Decoder.field "plural" (Decoder.nullable Decoder.string))
         (Decoder.field "level" (Decoder.nullable Decoder.int))
-
-
-articleDecoder : Decoder.Decoder State.Article
-articleDecoder =
-    Decoder.string
-        |> Decoder.andThen
-            (\str ->
-                case str of
-                    "der" ->
-                        Decoder.succeed State.Der
-
-                    "die" ->
-                        Decoder.succeed State.Die
-
-                    "das" ->
-                        Decoder.succeed State.Das
-
-                    somethingElse ->
-                        Decoder.fail <| "Unknown article: " ++ somethingElse
-            )
 
 
 logoutRequest : AppState -> Cmd Msg

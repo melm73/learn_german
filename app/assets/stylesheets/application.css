@@ -89,3 +89,7 @@ a.link, .display-4, .navbar-brand span {
   justify-content: center;
   display: flex;
 }
+
+.lead a {
+  color: black;
+}
