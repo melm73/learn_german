@@ -1,7 +1,7 @@
 class WordsController < ApplicationController
   def index
     if logged_in?
-      words = Word.all.take(500).map do |word|
+      words = Word.all.map do |word|
         serialize_word(word)
       end
 
