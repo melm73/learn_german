@@ -1103,7 +1103,7 @@ das,Medikament,A2,Noun,,,
 das,Meer,A2,Noun,,,2
 das,Meerschweinchen,,Noun,Meerschweinchen,1.4,
 die,Meinung,A2,Noun,,,
-der,Mensch,A2,Noun,,,2
+der,Mensch,A2,Noun,Menschen,,2
 die,Messe,A2,Noun,,,
 das,Messer,A2,Noun,,,
 das,Mineral,A2,Noun,,,
@@ -2176,7 +2176,7 @@ die,Klimaanlage,B1,Noun,,,
 die,Klinik,B1,Noun,,,
 das,Knie,B1,Noun,Knie,1.8,
 der,Knochen,B1,Noun,,,
-der,Knopf,B1,Noun,,,2
+der,Knopf,B1,Noun,Knöpfe,,2
 die,Kokosnuss,B1,Noun,,,
 die,Kommunikation,B1,Noun,,,
 der,Kompromiss,B1,Noun,,,

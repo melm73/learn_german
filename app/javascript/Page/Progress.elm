@@ -186,13 +186,26 @@ rowView progresses word =
     in
     tr []
         [ td []
-            [ div [ class "lead" ] [ a [ href ("/translation?wordId=" ++ word.id) ] [ text (fullWord word.article word.german) ] ]
+            [ div [ class "lead" ] [ wordView word ]
             , div [ class "text-muted" ] [ text sentence ]
             ]
         , td [ class "text-center align-middle" ] [ text word.category ]
         , td [ class "text-center align-middle" ] [ levelView level ]
         , td [] (reviewView progress)
         ]
+
+
+wordView word =
+    let
+        plural =
+            case word.plural of
+                Nothing ->
+                    ""
+
+                Just actualPlural ->
+                    " / die " ++ actualPlural
+    in
+    a [ href ("/translation?wordId=" ++ word.id) ] [ text (fullWord word.article word.german ++ plural) ]
 
 
 reviewView : Maybe Progress -> List (Html Msg)
