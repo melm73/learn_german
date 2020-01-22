@@ -9,6 +9,7 @@ type ActivePage
     = ProgressPage
     | ProfilePage
     | ReviewPage
+    | TranslationPage
 
 
 layout : ActivePage -> AppState -> Html msg -> Html msg

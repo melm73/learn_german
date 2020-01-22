@@ -9,6 +9,7 @@ import Json.Decode as Decoder
 import Page.Layout as Page exposing (ActivePage)
 import Page.Profile as ProfilePage
 import Page.Progress as ProgressPage
+import Page.Translation as TranslationPage
 import State exposing (AppState, User)
 import Url
 
@@ -50,12 +51,8 @@ type alias Model =
 type Page
     = ProfilePage ProfilePage.Model
     | ProgressPage ProgressPage.Model
+    | TranslationPage TranslationPage.Model
     | NotFoundPage
-
-
-type Route
-    = ProgressRoute
-    | ProfileRoute
 
 
 
@@ -71,6 +68,7 @@ init flags url key =
             , words = []
             , filteredWords = []
             , filter = State.initialFilter
+            , currentWordId = ""
             }
     in
     ( { key = key
@@ -91,6 +89,7 @@ type Msg
     | UrlChanged Url.Url
     | ProfileMsg ProfilePage.Msg
     | ProgressMsg ProgressPage.Msg
+    | TranslationMsg TranslationPage.Msg
     | HandleLogoutResponse (Result Http.Error String)
     | HandleWordResponse (Result Http.Error (List State.Word))
 
@@ -154,6 +153,13 @@ update msg model =
                 _ ->
                     ( { model | page = ProgressPage subModel }, Cmd.map ProgressMsg subCmd )
 
+        ( TranslationMsg subMsg, TranslationPage pageModel ) ->
+            let
+                ( subModel, subCmd ) =
+                    TranslationPage.update subMsg pageModel
+            in
+            ( { model | page = TranslationPage subModel }, Cmd.map TranslationMsg subCmd )
+
         ( _, _ ) ->
             ( model, Cmd.none )
 
@@ -177,6 +183,18 @@ changeRouteTo url model =
             in
             ( { model | url = url, page = ProgressPage subModel }
             , Cmd.map ProgressMsg subCmd
+            )
+
+        "/translation" ->
+            let
+                newState =
+                    State.setWord model.state url
+
+                ( subModel, subCmd ) =
+                    TranslationPage.init newState
+            in
+            ( { model | url = url, page = TranslationPage subModel, state = newState }
+            , Cmd.map TranslationMsg subCmd
             )
 
         _ ->
@@ -253,6 +271,11 @@ view model =
                 ProgressPage.view subModel model.state
                     |> Page.layout Page.ProgressPage model.state
                     |> Html.map ProgressMsg
+
+            TranslationPage subModel ->
+                TranslationPage.view subModel model.state
+                    |> Page.layout Page.TranslationPage model.state
+                    |> Html.map TranslationMsg
 
             NotFoundPage ->
                 text "page not found"

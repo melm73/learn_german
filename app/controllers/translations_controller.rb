@@ -1,4 +1,16 @@
 class TranslationsController < ApplicationController
+  before_action :require_login
+
+  def index
+    translation = Translation.find_by(user_id: current_user.id, word_id: word_id)
+
+    if translation
+      render json: [serialize_json_translation(translation)]
+    else
+      render json: []
+    end
+  end
+
   def create
     translation = Translation.new(translation_params)
 
@@ -39,6 +51,12 @@ class TranslationsController < ApplicationController
 
   private
 
+  def require_login
+    unless logged_in?
+      redirect_to login_path
+    end
+  end
+
   def translation_params
     params.require(:translation).permit(:user_id, :word_id, :translation, :sentence, :known)
   end
@@ -54,6 +72,16 @@ class TranslationsController < ApplicationController
       id: translation.id,
       user_id: translation.user_id,
       word_id: translation.word_id,
+      translation: translation.translation,
+      sentence: translation.sentence,
+      known: translation.known,
+    }
+  end
+
+  def serialize_json_translation(translation)
+    {
+      id: translation.id,
+      wordId: translation.word_id,
       translation: translation.translation,
       sentence: translation.sentence,
       known: translation.known,

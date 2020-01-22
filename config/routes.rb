@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   resources :progress, only: [:index]
 
   get '/translation', to: 'translations#edit'
-  resources :translations, only: [:create, :update]
+  resources :translations, only: [:create, :update, :index]
   resources :reviews, only: [:create, :index] do
     get 'review', on: :collection
   end

@@ -1,5 +1,9 @@
 module State exposing (..)
 
+import Url
+
+
+
 -- TYPES
 
 
@@ -9,6 +13,7 @@ type alias AppState =
     , words : List Word
     , filteredWords : List Word
     , filter : Filter
+    , currentWordId : String
     }
 
 
@@ -22,6 +27,7 @@ type alias Urls =
     , wordsUrl : String
     , currentUserProfileUrl : String
     , progressUrl : String
+    , translationsUrl : String
     }
 
 
@@ -111,6 +117,20 @@ setFilterLevel state option =
 setWords : AppState -> List Word -> AppState
 setWords state words =
     { state | words = words, filteredWords = filteredWords state.filter words }
+
+
+setWord : AppState -> Url.Url -> AppState
+setWord state url =
+    let
+        currentWordId =
+            case url.query of
+                Nothing ->
+                    ""
+
+                Just wordId ->
+                    String.right 36 wordId
+    in
+    { state | currentWordId = currentWordId }
 
 
 setPagination : AppState -> PaginationDirection -> AppState
