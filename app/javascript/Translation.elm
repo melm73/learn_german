@@ -1,4 +1,4 @@
-module TranslationPage exposing (..)
+module Translation exposing (..)
 
 import Browser
 import Functions exposing (fullWord)
