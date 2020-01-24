@@ -69,6 +69,7 @@ init flags url key =
             , filteredWords = []
             , filter = State.initialFilter
             , currentWordId = ""
+            , currentWordIndex = Nothing
             }
     in
     ( { key = key

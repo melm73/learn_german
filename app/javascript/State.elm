@@ -1,5 +1,6 @@
 module State exposing (..)
 
+import List.Extra as ListExtra
 import Url
 
 
@@ -14,6 +15,7 @@ type alias AppState =
     , filteredWords : List Word
     , filter : Filter
     , currentWordId : String
+    , currentWordIndex : Maybe Int
     }
 
 
@@ -129,8 +131,11 @@ setWord state url =
 
                 Just wordId ->
                     String.right 36 wordId
+
+        currentWordIndex =
+            ListExtra.findIndex (\w -> w.id == currentWordId) state.words
     in
-    { state | currentWordId = currentWordId }
+    { state | currentWordId = currentWordId, currentWordIndex = currentWordIndex }
 
 
 setPagination : AppState -> PaginationDirection -> AppState

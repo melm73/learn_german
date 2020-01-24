@@ -8,6 +8,7 @@ import Html.Events exposing (onCheck, onClick, onInput)
 import Http
 import Json.Decode as Decoder
 import Json.Encode as Encoder
+import List.Extra as ListExtra
 import State exposing (AppState)
 
 
@@ -18,6 +19,7 @@ import State exposing (AppState)
 type alias Model =
     { translation : Maybe Translation
     , newTranslation : Maybe Translation
+    , word : Maybe State.Word
     }
 
 
@@ -36,7 +38,10 @@ type alias Translation =
 
 init : AppState -> ( Model, Cmd Msg )
 init state =
-    ( { translation = Nothing, newTranslation = Nothing }
+    ( { translation = Nothing
+      , newTranslation = Nothing
+      , word = ListExtra.find (\w -> w.id == state.currentWordId) state.words
+      }
     , getTranslationRequest state
     )
 
@@ -118,10 +123,19 @@ update msg model =
         --HandleUpdateResponse (Err _) ->
         --    ( model, Cmd.none )
         HandleTranslationResponse (Ok translations) ->
-            ( { translation = List.head translations, newTranslation = List.head translations }, Cmd.none )
+            let
+                newTranslation =
+                    case List.head translations of
+                        Nothing ->
+                            Just defaultTranslation
+
+                        Just translation ->
+                            Just translation
+            in
+            ( { model | translation = List.head translations, newTranslation = newTranslation }, Cmd.none )
 
         HandleTranslationResponse (Err _) ->
-            ( { translation = Nothing, newTranslation = Just defaultTranslation }, Cmd.none )
+            ( { model | translation = Nothing, newTranslation = Just defaultTranslation }, Cmd.none )
 
 
 getTranslationRequest : AppState -> Cmd Msg
