@@ -20,7 +20,9 @@ type alias AppState =
 
 
 type alias User =
-    { name : String }
+    { id : String
+    , name : String
+    }
 
 
 type alias Urls =
