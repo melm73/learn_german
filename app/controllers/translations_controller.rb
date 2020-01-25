@@ -5,7 +5,7 @@ class TranslationsController < ApplicationController
     translation = Translation.find_by(user_id: current_user.id, word_id: word_id)
 
     if translation
-      render json: [serialize_json_translation(translation)]
+      render json: [serialize_translation(translation)]
     else
       render json: []
     end
@@ -32,30 +32,7 @@ class TranslationsController < ApplicationController
     end
   end
 
-  def edit
-    translation = Translation.find_by(user_id: current_user.id, word_id: word_id)
-
-    menu_props(current_page: 'translation')
-    @translation_props = {
-      word: serialize_word,
-      translation: serialize_translation(translation),
-      userId: current_user.id,
-      urls: {
-        createTranslationUrl: translations_path,
-        updateTranslationUrl: translations_path,
-      },
-    }
-
-    render :edit
-  end
-
   private
-
-  def require_login
-    unless logged_in?
-      redirect_to login_path
-    end
-  end
 
   def translation_params
     params.require(:translation).permit(:user_id, :word_id, :translation, :sentence, :known)
@@ -66,35 +43,12 @@ class TranslationsController < ApplicationController
   end
 
   def serialize_translation(translation)
-    return unless translation
-
-    {
-      id: translation.id,
-      user_id: translation.user_id,
-      word_id: translation.word_id,
-      translation: translation.translation,
-      sentence: translation.sentence,
-      known: translation.known,
-    }
-  end
-
-  def serialize_json_translation(translation)
     {
       id: translation.id,
       wordId: translation.word_id,
       translation: translation.translation,
       sentence: translation.sentence,
       known: translation.known,
-    }
-  end
-
-  def serialize_word
-    word = Word.find(word_id)
-
-    {
-      id: word.id,
-      german: word.german,
-      article: word.article,
     }
   end
 end

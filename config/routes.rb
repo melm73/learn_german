@@ -13,8 +13,6 @@ Rails.application.routes.draw do
 
   resources :words, only: [:index]
   resources :progress, only: [:index]
-
-  get '/translation', to: 'translations#edit'
   resources :translations, only: [:create, :update, :index]
   resources :reviews, only: [:create, :index]
 end

@@ -16,6 +16,12 @@ class ApplicationController < ActionController::Base
     @current_user = nil
   end
 
+  def require_login
+    unless logged_in?
+      redirect_to login_path
+    end
+  end
+
   def menu_props(current_page:)
     @menu_props = {
       user: { id: current_user.id, name: current_user.name },

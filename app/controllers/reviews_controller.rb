@@ -1,4 +1,6 @@
 class ReviewsController < ApplicationController
+  before_action :require_login
+
   def index
     number_of_translations = 10
 

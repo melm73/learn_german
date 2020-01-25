@@ -1,14 +1,12 @@
 class WordsController < ApplicationController
-  def index
-    if logged_in?
-      words = Word.all.map do |word|
-        serialize_word(word)
-      end
+  before_action :require_login
 
-      render json: words
-    else
-      render json: 'Access Denied', status: :unauthorized
+  def index
+    words = Word.all.map do |word|
+      serialize_word(word)
     end
+
+    render json: words
   end
 
   private
