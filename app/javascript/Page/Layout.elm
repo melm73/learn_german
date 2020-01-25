@@ -40,7 +40,7 @@ viewHeader activePage state =
         , div [ class "collapse navbar-collapse", id "navbarSupportedContent" ]
             [ ul [ class "navbar-nav mr-auto text-right" ]
                 [ li [ classList [ ( "nav-item", True ), ( "active", activePage == ProgressPage ) ] ]
-                    [ a [ class "nav-link", href "/" ] [ text "Progress" ] ]
+                    [ a [ class "nav-link", href "/progress" ] [ text "Progress" ] ]
                 , li [ classList [ ( "nav-item", True ), ( "active", activePage == ReviewPage ) ] ]
                     [ a [ class "nav-link", href "/review" ] [ text "Review" ] ]
                 ]

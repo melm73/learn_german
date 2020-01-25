@@ -187,7 +187,7 @@ changeRouteTo url model =
             , Cmd.map ProfileMsg subCmd
             )
 
-        "/" ->
+        "/progress" ->
             let
                 ( subModel, subCmd ) =
                     ProgressPage.init model.state
