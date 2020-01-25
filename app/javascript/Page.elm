@@ -9,6 +9,7 @@ import Json.Decode as Decoder
 import Page.Layout as Page exposing (ActivePage)
 import Page.Profile as ProfilePage
 import Page.Progress as ProgressPage
+import Page.Review as ReviewPage
 import Page.Translation as TranslationPage
 import State exposing (AppState, User)
 import Url
@@ -52,6 +53,7 @@ type Page
     = ProfilePage ProfilePage.Model
     | ProgressPage ProgressPage.Model
     | TranslationPage TranslationPage.Model
+    | ReviewPage ReviewPage.Model
     | NotFoundPage
 
 
@@ -91,6 +93,7 @@ type Msg
     | ProfileMsg ProfilePage.Msg
     | ProgressMsg ProgressPage.Msg
     | TranslationMsg TranslationPage.Msg
+    | ReviewMsg ReviewPage.Msg
     | HandleLogoutResponse (Result Http.Error String)
     | HandleWordResponse (Result Http.Error (List State.Word))
 
@@ -161,6 +164,13 @@ update msg model =
             in
             ( { model | page = TranslationPage subModel }, Cmd.map TranslationMsg subCmd )
 
+        ( ReviewMsg subMsg, ReviewPage pageModel ) ->
+            let
+                ( subModel, subCmd ) =
+                    ReviewPage.update subMsg pageModel
+            in
+            ( { model | page = ReviewPage subModel }, Cmd.map ReviewMsg subCmd )
+
         ( _, _ ) ->
             ( model, Cmd.none )
 
@@ -196,6 +206,15 @@ changeRouteTo url model =
             in
             ( { model | url = url, page = TranslationPage subModel, state = newState }
             , Cmd.map TranslationMsg subCmd
+            )
+
+        "/review" ->
+            let
+                ( subModel, subCmd ) =
+                    ReviewPage.init model.state
+            in
+            ( { model | url = url, page = ReviewPage subModel }
+            , Cmd.map ReviewMsg subCmd
             )
 
         _ ->
@@ -277,6 +296,11 @@ view model =
                 TranslationPage.view subModel model.state
                     |> Page.layout Page.TranslationPage model.state
                     |> Html.map TranslationMsg
+
+            ReviewPage subModel ->
+                ReviewPage.view subModel model.state
+                    |> Page.layout Page.ReviewPage model.state
+                    |> Html.map ReviewMsg
 
             NotFoundPage ->
                 text "page not found"

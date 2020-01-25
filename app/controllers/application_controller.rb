@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
         wordsUrl: words_path,
         progressUrl: progress_index_path,
         translationsUrl: translations_path,
+        reviewsUrl: reviews_path,
       },
     }
   end

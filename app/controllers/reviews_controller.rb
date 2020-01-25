@@ -1,21 +1,5 @@
 class ReviewsController < ApplicationController
   def index
-    if logged_in?
-      menu_props(current_page: 'review')
-      @review_page_props = {
-        urls: {
-          getReviewsUrl: review_reviews_path,
-          postReviewUrl: reviews_path,
-        },
-      }
-
-      render :index
-    else
-      redirect_to login_path
-    end
-  end
-
-  def review
     number_of_translations = 10
 
     translations = Translation

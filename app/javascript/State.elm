@@ -32,6 +32,7 @@ type alias Urls =
     , currentUserProfileUrl : String
     , progressUrl : String
     , translationsUrl : String
+    , reviewsUrl : String
     }
 
 

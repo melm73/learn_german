@@ -42,7 +42,7 @@ viewHeader activePage state =
                 [ li [ classList [ ( "nav-item", True ), ( "active", activePage == ProgressPage ) ] ]
                     [ a [ class "nav-link", href "/" ] [ text "Progress" ] ]
                 , li [ classList [ ( "nav-item", True ), ( "active", activePage == ReviewPage ) ] ]
-                    [ a [ class "nav-link", href "/reviews" ] [ text "Review" ] ]
+                    [ a [ class "nav-link", href "/review" ] [ text "Review" ] ]
                 ]
             , ul [ class "navbar-nav text-right" ]
                 [ li [ class "nav-item dropdown" ]
