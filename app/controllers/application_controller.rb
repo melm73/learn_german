@@ -21,19 +21,4 @@ class ApplicationController < ActionController::Base
       redirect_to login_path
     end
   end
-
-  def menu_props(current_page:)
-    @menu_props = {
-      user: { id: current_user.id, name: current_user.name },
-      currentPage: current_page,
-      urls: {
-        logoutUrl: logout_path,
-        currentUserProfileUrl: current_user_profile_users_path,
-        wordsUrl: words_path,
-        progressUrl: progress_index_path,
-        translationsUrl: translations_path,
-        reviewsUrl: reviews_path,
-      },
-    }
-  end
 end

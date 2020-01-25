@@ -1,4 +1,4 @@
-class ProgressController < ApplicationController
+class ProgressesController < ApplicationController
   before_action :require_login
 
   def index

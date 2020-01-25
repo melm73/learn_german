@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   end
 
   resources :words, only: [:index]
-  resources :progress, only: [:index]
+  resources :progresses, only: [:index]
   resources :translations, only: [:create, :update, :index]
   resources :reviews, only: [:create, :index]
 end
