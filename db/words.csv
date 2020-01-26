@@ -37,6 +37,7 @@ die,Ente,B2,Noun,Enten,,1
 die,Entschuldigung,A1,Noun,Entschuldigungen,1.1,1
 die,Erdbeere,A1,Noun,Erdbeeren,,1
 das,Essen,A1,Noun,Essen,,1
+das,Europa,A1,Noun,,1.4,1
 der,Fisch,A1,Noun,Fische,1.4,1
 das,Fleisch,A1,Noun,,,1
 die,Fliege,,Noun,Fliegen,,1
@@ -190,6 +191,7 @@ der,Wind,A1,Noun,,,2
 ,waschen,A1,Verb,,,2
 ,wollen,A1,Verb,,,2
 ,allein,B2,Adjective,,2.2,3
+,andere,A1,Adjective,,,3
 ,wirklich,,Adjective,,,3
 ,auch,,Adverb,,1.2,3
 ,dran,,Adverb,,,3
@@ -208,30 +210,69 @@ der,Wind,A1,Noun,,,2
 ,wieder,,Adverb,,,3
 ,zu,,Adverb,,1.4,3
 ,zusammen,,Adverb,,,3
+,aber,,Conjunction,,1.2,3
+,da,,Conjunction,,,3
+,dass,,Conjunction,,,3
+,denn,,Conjunction,,1.4,3
+,doch,,Conjunction,,1.3,3
+,entweder,,Conjunction,,,3
+,obwohl,,Conjunction,,,3
+,oder,,Conjunction,,1.5,3
+,sobald,,Conjunction,,,3
+,solange,,Conjunction,,,3
+,sondern,,Conjunction,,,3
+,weder,,Conjunction,,,3
+,weil,,Conjunction,,,3
+,wenn,,Conjunction,,,3
 der,Bahnhof,A1,Noun,Bahnhöfe,2.1,3
+der,Balkon,A1,Noun,Balkone,,3
 die,Bank,A1,Noun,Banken,,3
+das,Bett,A1,Noun,Betten,,3
 die,Bibliothek,A2,Noun,Bibliotheken,,3
 die,Brücke,A2,Noun,Brücken,,3
+das,Dach,B1,Noun,Dächer,,3
+die,Decke,B1,Noun,Decken,,3
 das,Dorf,A1,Noun,Dörfer,1.3,3
 die,Ecke,A1,Noun,Ecken,,3
 das,Fahrzeug,B1,Noun,Fahrzeuge,,3
+das,Fenster,A2,Noun,Fenster,,3
 das,Feuerzeug,B1,Noun,Feuerzeuge,,3
 das,Flugzeug,A1,Noun,Flugzeuge,,3
 der,Garten,A1,Noun,Gärten,,3
 das,Gebäude,B1,Noun,Gebäude,,3
 das,Haus,A1,Noun,Häuser,1.3,3
 das,Hotel,A1,Noun,Hotels,,3
+der,Keller,A2,Noun,Keller,,3
+die,Küche,A1,Noun,Küchen,,3
+das,Ladegerät,,Noun,Ladegeräte,,3
+die,Lampe,A2,Noun,Lampen,,3
 das,Land,A1,Noun,Länder,1.3,3
+das,Licht,A1,Noun,Lichter,,3
 der,Markt,A2,Noun,Märkte,,3
+das,Möbel,A1,Noun,Möbel,,3
 das,Paar,A2,Noun,Paare,,3
 der,Park,A2,Noun,Parks,,3
 das,Restaurant,A1,Noun,Restaurants,2.2,3
 das,Spielzeug,B1,Noun,Spielzeuge,,3
+das,Schlafzimmer,A2,Noun,Schlafzimmer,,3
 das,Schloss,B1,Noun,Schlösser,2.1,3
+der,Schlüssel,A1,Noun,Schlüssel,,3
+der,Schrank,A1,Noun,Schränke,,3
 die,Schule,A1,Noun,Schulen,1.1,3
+das,Sofa,A1,Noun,Sofas,,3
 die,Stadt,A1,Noun,Städte,,3
+die,Steckdose,B1,Noun,Steckdosen,,3
 die,Straße,A1,Noun,Straßen,,3
+der,Stuhl,A2,Noun,Stühle,,3
+der,Teppich,B1,Noun,Teppiche,,3
+der,Tisch,A1,Noun,Tische,,3
+die,Treppe,A1,Noun,Treppen,,3
+die,Tür,A2,Noun,Türen,,3
+die,Wand,B1,Noun,Wände,,3
 das,Werkzeug,B1,Noun,Werkzeuge,,3
+die,Wohnung,A1,Noun,Wohnungen,,3
+das,Wohnzimmer,A2,Noun,Wohnzimmer,,3
+der,Zaun,B2,Noun,Zäune,,3
 das,Zeug,B1,Noun,,,3
 das,Zimmer,A1,Noun,Zimmer,1.6,3
 ,alles,,Pronoun,,,3
@@ -249,6 +290,8 @@ das,Zimmer,A1,Noun,Zimmer,1.6,3
 ,viel,A1,Pronoun,,1.5,3
 ,viele,B2,Pronoun,,,3
 ,bauen,A2,Verb,,,3
+,hören,A1,Verb,,1.5,3
+,öffnen,A1,Verb,,,3
 ,schlafen,A1,Verb,,1.4,3
 ,ähnlich,B1,Adjective,,,
 ,ängstlich,A2,Adjective,,,
@@ -293,7 +336,6 @@ das,Zimmer,A1,Noun,Zimmer,1.6,3
 ,alternativ,B1,Adjective,,,
 ,amerikanisch,A2,Adjective,,,
 ,amtsmüde,B2,Adjective,,,
-,andere,A1,Adjective,,,
 ,anders,B2,Adjective,,,
 ,anderthalb,B2,Adjective,,,
 ,anfällig,B2,Adjective,,,
@@ -1252,7 +1294,6 @@ das,Bahnfahren,B2,Noun,,,
 die,Bahnstation,B2,Noun,,,
 der,Bahnsteig,B2,Noun,,,
 das,Bakterium,B2,Noun,,,
-der,Balkon,A1,Noun,,,
 der,Ball,A2,Noun,,1.7,
 das,Ballett,B1,Noun,,,
 die,Bananenkiste,B1,Noun,,,
@@ -1334,7 +1375,6 @@ die,Betreuerin,B1,Noun,,,
 die,Betreuung,B1,Noun,,,
 der,Betrieb,B1,Noun,,,
 der,Betriebsrat,B2,Noun,,,
-das,Bett,A1,Noun,,,
 der,Bettenbereich,B2,Noun,,,
 die,Bettwäsche,B1,Noun,,,
 die,Bevölkerung,B1,Noun,,,
@@ -1468,7 +1508,6 @@ das,Dönerfleisch,B2,Noun,,,
 der,Dönerimbiss,B2,Noun,,,
 der,Dönerladen,B2,Noun,,,
 der,Dönerspieß,B2,Noun,,,
-das,Dach,B1,Noun,,,
 die,Dame,A1,Noun,,,
 der,Dank,A1,Noun,,,
 die,Dankbarkeit,B2,Noun,,,
@@ -1482,7 +1521,6 @@ die,Dauer,B1,Noun,,2.2,
 der,Daumen,B2,Noun,,,
 die,Debatte,B2,Noun,,,
 das,Deck,A2,Noun,,,
-die,Decke,B1,Noun,,,
 der,Dedektiv,B2,Noun,,,
 die,Degradierung,B2,Noun,,,
 die,Deklination,B2,Noun,,,
@@ -1671,7 +1709,6 @@ das,Esszimmer,B2,Noun,,,
 die,Etage,B1,Noun,,,
 die,Eule,A2,Noun,,,
 der,Euro,A1,Noun,,,
-das,Europa,A1,Noun,,1.4,
 die,Europameisterschaft,B2,Noun,,,
 der,Experte,B1,Noun,,,
 der,Export,B2,Noun,,,
@@ -1728,7 +1765,6 @@ der,Feierabend,A2,Noun,,,
 die,Feierlichkeit,B2,Noun,,,
 der,Feiertag,A2,Noun,,,
 das,Feld,B1,Noun,,,
-das,Fenster,A2,Noun,,,
 die,Ferien,A2,Noun,,,
 der,Ferienkurs,B2,Noun,,,
 die,Fernbedienung,B1,Noun,,,
@@ -2174,7 +2210,6 @@ der,König,B1,Noun,,,
 der,Körper,A2,Noun,,,
 das,Körperhaar,A1,Noun,,,
 der,Körperteil,B2,Noun,,,
-die,Küche,A1,Noun,,,
 der,Küchenbereich,B2,Noun,,,
 die,Küchenrolle,B2,Noun,,,
 der,Kühlschrank,A1,Noun,,,
@@ -2232,7 +2267,6 @@ das,Kaufhaus,A2,Noun,,,
 der,Kebab,A2,Noun,,,
 der,Kebabladen,A2,Noun,,,
 der,Keks,B2,Noun,Kekse,1.6,
-der,Keller,A2,Noun,,,
 der,Kellner,B1,Noun,,,
 die,Kellnerin,B1,Noun,,,
 das,Kennzeichen,B2,Noun,Kennzeichen,1.3,
@@ -2402,7 +2436,6 @@ die,Lage,B1,Noun,,,
 das,Lager,B1,Noun,Lager,1.5,
 die,Lagerung,B2,Noun,,,
 das,Lama,,Noun,Lamas,1.4,
-die,Lampe,A2,Noun,,,
 die,Landschaft,A2,Noun,,,
 die,Landung,B1,Noun,,,
 die,Landwirtschaft,B1,Noun,,,
@@ -2451,7 +2484,6 @@ die,Leute,B2,Noun,,,
 das,Level,B2,Noun,,,
 das,Lexikon,B1,Noun,,,
 der,Libanon,B2,Noun,,,
-das,Licht,A1,Noun,,,
 der,Lidschatten,B2,Noun,,,
 die,Liebe,B1,Noun,,,
 die,Lieben,B2,Noun,,,
@@ -2481,7 +2513,6 @@ der,Lohn,B1,Noun,,,
 die,Lust,A2,Noun,,,
 das,Märchen,B2,Noun,,,
 der,März,A1,Noun,,1.6,
-das,Möbel,A1,Noun,,,
 das,Möbelgeschäft,B2,Noun,,,
 das,Möbelstück,B2,Noun,,,
 das,Möbelstück,B2,Noun,,,
@@ -3020,7 +3051,6 @@ die,Schildkröte,B1,Noun,Schildkröten,1.4,
 der,Schimpanse,B2,Noun,,,
 der,Schinken,A1,Noun,Schinken,1.6,
 der,Schirm,A2,Noun,,,
-der,Schlüssel,A1,Noun,,,
 der,Schlüsselanhänger,B2,Noun,,,
 der,Schlüsselbund,B2,Noun,,,
 der,Schlüsselring,A1,Noun,Schlüsselringe,1.8,
@@ -3051,7 +3081,6 @@ das,Schnitzel,B2,Noun,,,
 der,Schnupfen,B1,Noun,,,
 der,Schnurrbart,B2,Noun,,,
 der,Schock,A2,Noun,,,
-der,Schrank,A1,Noun,,,
 die,Schraube,B2,Noun,,,
 der,Schreck,B1,Noun,,,
 der,Schrecken,B1,Noun,,,
@@ -3128,7 +3157,6 @@ das,Slowenien,B2,Noun,,,
 der,Smalltalk,B2,Noun,,,
 der,Snack,B2,Noun,,,
 die,Soße,B2,Noun,,,
-das,Sofa,A1,Noun,,,
 die,Software,A2,Noun,,,
 der,Softwareingenieur,B2,Noun,,,
 die,Sohle,B2,Noun,,,
@@ -3224,7 +3252,6 @@ die,Statue,B2,Noun,,,
 der,Stau,B1,Noun,,,
 der,Staub,B2,Noun,,,
 das,Staubsaugen,B1,Noun,,,
-die,Steckdose,B1,Noun,,,
 der,Stecker,B1,Noun,,,
 der,Steg,B2,Noun,,,
 die,Steigerung,B2,Noun,,,
@@ -3282,7 +3309,6 @@ der,Studierende,B2,Noun,,,
 das,Studio,A1,Noun,,,
 das,Studium,B1,Noun,,,
 die,Stufe,B1,Noun,,,
-der,Stuhl,A2,Noun,,,
 die,Stunde,A1,Noun,Stunden,1.7,
 der,Stundenkilometer,B1,Noun,,,
 der,Sturm,B1,Noun,,,
@@ -3304,7 +3330,6 @@ das,T-Shirt,A1,Noun,,,
 der,Täter,B1,Noun,,,
 die,Täterin,B1,Noun,,,
 die,Tätigkeit,B1,Noun,,,
-die,Tür,A2,Noun,,,
 die,Türkei,A2,Noun,,,
 die,Tüte,B1,Noun,,,
 der,Tabak,A2,Noun,,,
@@ -3365,7 +3390,6 @@ die,Temperatur,B1,Noun,,,
 das,Tempo,B1,Noun,,,
 das,Tennis,A2,Noun,,1.1,
 die,Tennisspielerin,B2,Noun,,,
-der,Teppich,B1,Noun,,,
 der,Termin,A1,Noun,Termine,2.2,
 der,Terminkalender,B1,Noun,,,
 die,Terrasse,B2,Noun,,,
@@ -3385,7 +3409,6 @@ das,Tiergeschäft,,Noun,Tiergeschäfte,1.4,
 der,Tierpark,B2,Noun,,,
 der,Tiger,,Noun,Tiger,1.4,
 der,Tipp,A2,Noun,,,
-der,Tisch,A1,Noun,,,
 die,Tischlerei,B2,Noun,,,
 das,Tischtennis,B2,Noun,,1.2,
 die,Tischtennisplatte,B2,Noun,,,
@@ -3422,7 +3445,6 @@ der,Traumjob,A2,Noun,,,
 der,Treffpunkt,B1,Noun,,,
 der,Trend,B2,Noun,,,
 die,Trennung,B1,Noun,,,
-die,Treppe,A1,Noun,,,
 das,Treppenhaus,B1,Noun,,,
 der,Tresen,B2,Noun,,,
 der,Triathlon,B2,Noun,Triathlons,1.5,
@@ -3600,7 +3622,6 @@ das,Wahrzeichen,B2,Noun,,,
 der,Wald,A2,Noun,,,
 die,Waldfläche,B2,Noun,,,
 das,Walnussöl,B2,Noun,,,
-die,Wand,B1,Noun,,,
 die,Wanderung,B1,Noun,,,
 die,Wange,B2,Noun,,,
 der,Waschbär,B2,Noun,,,
@@ -3682,9 +3703,7 @@ der,Wochentag,A1,Noun,,,
 das,Wohl,B2,Noun,,,
 der,Wohnort,B1,Noun,Wohnorte,1.1,
 der,Wohnsitz,B1,Noun,,,
-die,Wohnung,A1,Noun,,,
 der,Wohnungsmarkt,B2,Noun,,,
-das,Wohnzimmer,A2,Noun,,,
 die,Wolke,A2,Noun,,,
 die,Wolle,B2,Noun,,,
 der,Workshop,A2,Noun,,,
@@ -3707,7 +3726,6 @@ die,Zahnarztpraxis,B2,Noun,,,
 die,Zahnpasta,B1,Noun,,,
 die,Zange,B2,Noun,,,
 der,Zaubertrick,B2,Noun,,,
-der,Zaun,B2,Noun,,,
 der,Zehnkampf,B2,Noun,,,
 das,Zeichen,B1,Noun,,,
 die,Zeichnung,B1,Noun,,,
@@ -3804,12 +3822,9 @@ die,Million,,Number,Millionen,2.2,
 ,zwanzig,A1,Number,,1.2,
 ,zwei,A1,Number,,1.1,
 ,überhaupt,,Other,,2.1,
-,aber,,Other,,1.2,
 ,auf,,Other,,1.2,
 ,bei,,Other,,1.3,
 ,dann,,Other,,1.8,
-,denn,,Other,,1.4,
-,doch,,Other,,1.3,
 ,einmal,,Other,,1.8,
 ,heute,,Other,,1.5,
 ,ja,,Other,,1.1,
@@ -3819,7 +3834,6 @@ die,Million,,Number,Millionen,2.2,
 ,mit,,Other,,1.2,
 ,nach,,Other,,1.7,
 ,nein,,Other,,1.1,
-,oder,,Other,,1.5,
 ,sehr,,Other,,1.1,
 ,sowieso,,Other,,2.1,
 ,um,,Other,,1.7,
@@ -3841,7 +3855,6 @@ die,Million,,Number,Millionen,2.2,
 ,ändern,A2,Verb,,,
 ,ärgern,A2,Verb,,,
 ,äußern,B2,Verb,,,
-,öffnen,A1,Verb,,,
 ,üben,A1,Verb,,,
 ,überbrücken,B2,Verb,,,
 ,überfahren,B2,Verb,,,
@@ -4323,7 +4336,6 @@ die,Million,,Number,Millionen,2.2,
 ,gucken,B1,Verb,,1.2,
 ,gut drauf sein,B2,Verb,,,
 ,hängen,A2,Verb,,,
-,hören,A1,Verb,,1.5,
 ,hageln,B2,Verb,,,
 ,halten,A2,Verb,,,
 ,handeln,B1,Verb,,,

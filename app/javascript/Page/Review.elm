@@ -2,8 +2,8 @@ module Page.Review exposing (..)
 
 import Browser.Dom as Dom
 import Functions exposing (fullWord)
-import Html exposing (Html, button, div, h1, h5, input, label, small, strong, text)
-import Html.Attributes exposing (class, for, id, required, type_, value)
+import Html exposing (Html, button, div, form, h1, h5, input, label, option, select, small, strong, text)
+import Html.Attributes exposing (class, for, id, required, selected, type_, value)
 import Html.Attributes.Aria exposing (ariaDescribedby)
 import Html.Events exposing (onClick, onInput)
 import Html.Events.Extra exposing (onEnter)
@@ -19,6 +19,8 @@ import Task
 
 type alias Model =
     { reviewState : ReviewState
+    , reviewLevel : Maybe Int
+    , reviewCount : Int
     , remainingReviews : List Review
     , currentReview : Maybe Review
     , currentTranslation : String
@@ -64,6 +66,8 @@ type alias Word =
 init : AppState -> ( Model, Cmd Msg )
 init state =
     ( { reviewState = SelectingOptions
+      , reviewLevel = state.filter.level
+      , reviewCount = 10
       , remainingReviews = []
       , currentReview = Nothing
       , currentTranslation = ""
@@ -85,6 +89,8 @@ type Msg
     | CheckButtonClicked
     | NextButtonClicked
     | HandlePostReviewResponse (Result Http.Error ())
+    | SelectLevelOption String
+    | SelectCountOption String
     | NoOp
 
 
@@ -96,6 +102,25 @@ update msg model =
 
         StartReviewClicked ->
             ( { model | reviewState = FetchingReviews }, getReviewsRequest model )
+
+        SelectLevelOption level ->
+            let
+                selectedLevel =
+                    case level of
+                        "Any" ->
+                            Nothing
+
+                        _ ->
+                            String.toInt (Maybe.withDefault "0" (Just level))
+            in
+            ( { model | reviewLevel = selectedLevel }, Cmd.none )
+
+        SelectCountOption count ->
+            let
+                selectedCount =
+                    Maybe.withDefault 10 (String.toInt count)
+            in
+            ( { model | reviewCount = selectedCount }, Cmd.none )
 
         HandleGetReviewsResponse (Ok reviews) ->
             let
@@ -160,10 +185,19 @@ update msg model =
 
 getReviewsRequest : Model -> Cmd Msg
 getReviewsRequest model =
+    let
+        queryParams =
+            case model.reviewLevel of
+                Nothing ->
+                    "?count=" ++ String.fromInt model.reviewCount
+
+                Just level ->
+                    "?level=" ++ String.fromInt level ++ "&count=" ++ String.fromInt model.reviewCount
+    in
     Http.request
         { method = "GET"
         , headers = [ Http.header "X-CSRF-Token" model.urls.csrfToken ]
-        , url = model.urls.reviewsUrl
+        , url = model.urls.reviewsUrl ++ queryParams
         , body = Http.emptyBody
         , expect = Http.expectJson HandleGetReviewsResponse (Decoder.list reviewDecoder)
         , timeout = Nothing
@@ -231,7 +265,7 @@ view : Model -> AppState -> Html Msg
 view model state =
     case model.reviewState of
         SelectingOptions ->
-            optionsView
+            optionsView model
 
         FetchingReviews ->
             div [] [ text "please wait... fetching" ]
@@ -246,24 +280,41 @@ view model state =
             div [] [ text "something went wrong" ]
 
 
-optionsView : Html Msg
-optionsView =
-    div [ class "card row" ]
-        [ div [ class "card-body col" ]
-            [ div []
-                [ text "translated words only"
+optionsView : Model -> Html Msg
+optionsView model =
+    div [ class "row" ]
+        [ div [ class "col-sm-6 offset-sm-3" ]
+            [ div [ class "card" ]
+                [ h5 [ class "card-header" ] [ text "Review options" ]
+                , div [ class "card-body " ]
+                    [ div [ class "row form-group" ]
+                        [ label [ class "col-sm-6 control-label text-right" ] [ text "translated words only" ] ]
+                    , div [ class "row form-group" ]
+                        [ label [ class "col-sm-6 control-label text-right" ] [ text "number of words to test: " ]
+                        , div [ class "col-sm-3" ]
+                            [ select [ class "form-control", onInput SelectCountOption ]
+                                [ option [ selected (model.reviewCount == 10), value "10" ] [ text "10" ]
+                                , option [ selected (model.reviewCount == 20), value "20" ] [ text "20" ]
+                                , option [ selected (model.reviewCount == 30), value "30" ] [ text "30" ]
+                                ]
+                            ]
+                        ]
+                    , div [ class "row form-group" ]
+                        [ label [ class "col-sm-6 control-label text-right" ] [ text "Level" ]
+                        , div [ class "col-sm-3" ]
+                            [ select [ class "form-control", onInput SelectLevelOption ]
+                                [ option [ selected (model.reviewLevel == Nothing), value "Any" ] [ text "Any" ]
+                                , option [ selected (model.reviewLevel == Just 1), value "1" ] [ text "1" ]
+                                , option [ selected (model.reviewLevel == Just 2), value "2" ] [ text "2" ]
+                                , option [ selected (model.reviewLevel == Just 3), value "3" ] [ text "3" ]
+                                ]
+                            ]
+                        ]
+                    ]
+                , div [ class "card-footer" ]
+                    [ button [ class "btn btn-primary", onClick StartReviewClicked ] [ text "Start Now!" ]
+                    ]
                 ]
-            , div []
-                [ text "maximum number of words to test: "
-                , strong [] [ text "10" ]
-                ]
-            , div []
-                [ text "group: "
-                , strong [] [ text "All" ]
-                ]
-            ]
-        , div [ class "card-footer" ]
-            [ button [ class "btn btn-primary", onClick StartReviewClicked ] [ text "Start Now!" ]
             ]
         ]
 

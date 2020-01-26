@@ -2,13 +2,6 @@ class ReviewsController < ApplicationController
   before_action :require_login
 
   def index
-    number_of_translations = 10
-
-    translations = Translation
-      .where(user_id: current_user.id).to_a
-      .reject(&:learnt)
-      .sample(number_of_translations)
-
     reviews = translations.map do |translation|
       {
         translation: serialize_translation(translation),
@@ -26,6 +19,26 @@ class ReviewsController < ApplicationController
   end
 
   private
+
+  def translations
+    translation_query = Translation
+      .where(user_id: current_user.id).to_a
+      .reject(&:learnt)
+      .select {|t| level ? t.word.duolingo_level == level : true }
+      .sample(number_of_translations) 
+  end
+
+  def level
+    @level ||= query_params[:level]&.to_i
+  end
+
+  def number_of_translations
+    @number_of_translations ||= query_params[:count].to_i
+  end
+
+  def query_params
+    @query_params ||= params.permit(:count, :level)
+  end
 
   def serialize_translation(translation)
     {
