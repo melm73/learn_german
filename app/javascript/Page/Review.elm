@@ -142,15 +142,20 @@ update msg model =
 
         CheckButtonClicked ->
             let
-                correct =
+                ( correct, cmd ) =
                     case model.currentReview of
                         Nothing ->
-                            Nothing
+                            ( Nothing, Cmd.none )
 
                         Just review ->
-                            Just (model.currentTranslation == fullWord review.word.article review.word.german)
+                            case model.currentTranslation of
+                                "" ->
+                                    ( Nothing, Cmd.none )
+
+                                translation ->
+                                    ( Just (translation == fullWord review.word.article review.word.german), focusOn "nextButton" )
             in
-            ( { model | translationState = correct }, focusOn "nextButton" )
+            ( { model | translationState = correct }, cmd )
 
         NextButtonClicked ->
             let
