@@ -2,13 +2,14 @@ module Page.Review exposing (..)
 
 import Browser.Dom as Dom
 import Functions exposing (fullWord)
-import Html exposing (Html, button, div, form, h1, h5, input, label, option, select, small, strong, text)
-import Html.Attributes exposing (class, for, id, required, selected, type_, value)
+import Html exposing (Html, button, div, form, h1, h2, h5, input, label, option, select, small, strong, table, tbody, td, text, th, thead, tr)
+import Html.Attributes exposing (class, for, id, required, scope, selected, type_, value)
 import Html.Attributes.Aria exposing (ariaDescribedby)
 import Html.Events exposing (onClick, onInput)
 import Html.Events.Extra exposing (onEnter)
 import Http
 import Json.Decode as Decoder
+import List.Extra as ListExtra
 import State exposing (AppState)
 import Task
 
@@ -25,6 +26,7 @@ type alias Model =
     , currentReview : Maybe Review
     , currentTranslation : String
     , translationState : Maybe Bool
+    , results : List TranslationResult
     , urls : State.Urls
     }
 
@@ -59,6 +61,14 @@ type alias Word =
     }
 
 
+type alias TranslationResult =
+    { german : String
+    , translation : String
+    , reviewTranslation : String
+    , correct : Bool
+    }
+
+
 
 -- INIT
 
@@ -72,6 +82,7 @@ init state =
       , currentReview = Nothing
       , currentTranslation = ""
       , translationState = Nothing
+      , results = []
       , urls = state.urls
       }
     , Cmd.none
@@ -159,18 +170,18 @@ update msg model =
 
         NextButtonClicked ->
             let
-                cmd =
+                ( cmd, results ) =
                     case ( model.currentReview, model.translationState ) of
                         ( Nothing, _ ) ->
-                            Cmd.none
+                            ( Cmd.none, model.results )
 
                         ( Just review, Nothing ) ->
-                            Cmd.none
+                            ( Cmd.none, model.results )
 
                         ( Just review, Just correct ) ->
-                            postReviewRequest model review correct
+                            ( postReviewRequest model review correct, addResult review correct model.currentTranslation model.results )
             in
-            ( model, cmd )
+            ( { model | results = results }, cmd )
 
         HandlePostReviewResponse (Ok _) ->
             let
@@ -186,6 +197,18 @@ update msg model =
 
         HandlePostReviewResponse (Err _) ->
             ( { model | reviewState = Error }, Cmd.none )
+
+
+addResult : Review -> Bool -> String -> List TranslationResult -> List TranslationResult
+addResult review correct translation results =
+    List.append
+        [ { german = fullWord review.word.article review.word.german
+          , translation = review.translation.translation
+          , reviewTranslation = translation
+          , correct = correct
+          }
+        ]
+        results
 
 
 getReviewsRequest : Model -> Cmd Msg
@@ -279,7 +302,7 @@ view model state =
             reviewView model
 
         Finished ->
-            div [] [ text "All done!" ]
+            resultsView model.results
 
         Error ->
             div [] [ text "something went wrong" ]
@@ -422,3 +445,63 @@ buttonView model =
                 , onClick NextButtonClicked
                 ]
                 [ text "Next" ]
+
+
+resultsView : List TranslationResult -> Html Msg
+resultsView results =
+    div []
+        [ summaryView results
+        , table [ class "table table-striped" ]
+            [ thead [ class "thead-dark" ]
+                [ tr []
+                    [ th [ scope "col" ] [ text "GERMAN" ]
+                    , th [ scope "col" ] [ text "TRANSLATION" ]
+                    , th [ scope "col" ] [ text "REVIEW" ]
+                    , th [ scope "col", class "text-center" ] [ text "RESULT" ]
+                    ]
+                ]
+            , tbody [] (List.map resultRow results)
+            ]
+        ]
+
+
+summaryView : List TranslationResult -> Html Msg
+summaryView results =
+    let
+        total =
+            List.length results
+
+        correct =
+            ListExtra.count (\r -> r.correct) results
+    in
+    h2 [] [ text ("Result: " ++ String.fromInt correct ++ " / " ++ String.fromInt total) ]
+
+
+resultRow : TranslationResult -> Html Msg
+resultRow result =
+    tr []
+        [ td [] [ text result.german ]
+        , td [] [ text result.translation ]
+        , td [] [ text result.reviewTranslation ]
+        , td [ class "text-center" ] [ correctView result.correct ]
+        ]
+
+
+correctView : Bool -> Html Msg
+correctView correct =
+    case correct of
+        True ->
+            text (String.fromChar tickMark)
+
+        False ->
+            text (String.fromChar crossChar)
+
+
+tickMark : Char
+tickMark =
+    '✓'
+
+
+crossChar : Char
+crossChar =
+    '✕'
