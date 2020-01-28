@@ -267,6 +267,7 @@ searchView model state =
                 , option [ selected (state.filter.level == Just 1), value "1" ] [ text "1" ]
                 , option [ selected (state.filter.level == Just 2), value "2" ] [ text "2" ]
                 , option [ selected (state.filter.level == Just 3), value "3" ] [ text "3" ]
+                , option [ selected (state.filter.level == Just 4), value "4" ] [ text "4" ]
                 ]
             ]
         , div [ class "form-group position-relative" ]

@@ -335,6 +335,7 @@ optionsView model =
                                 , option [ selected (model.reviewLevel == Just 1), value "1" ] [ text "1" ]
                                 , option [ selected (model.reviewLevel == Just 2), value "2" ] [ text "2" ]
                                 , option [ selected (model.reviewLevel == Just 3), value "3" ] [ text "3" ]
+                                , option [ selected (model.reviewLevel == Just 4), value "4" ] [ text "4" ]
                                 ]
                             ]
                         ]
