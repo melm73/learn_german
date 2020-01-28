@@ -73,14 +73,18 @@ init flags url key =
             , currentWordId = ""
             , currentWordIndex = Nothing
             }
+
+        initialModel =
+            { key = key
+            , url = url
+            , state = state
+            , page = NotFoundPage
+            }
+
+        ( model, cmd ) =
+            changeRouteTo url initialModel
     in
-    ( { key = key
-      , url = url
-      , state = state
-      , page = NotFoundPage
-      }
-    , getWordsRequest state
-    )
+    ( model, Cmd.batch [ getWordsRequest state, cmd ] )
 
 
 

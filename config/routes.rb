@@ -15,4 +15,6 @@ Rails.application.routes.draw do
   resources :progresses, only: [:index]
   resources :translations, only: [:create, :update, :index]
   resources :reviews, only: [:create, :index]
+
+  get '*page', to: 'page#index', format: false
 end
