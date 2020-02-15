@@ -415,17 +415,35 @@ titleView review =
 
 stateView : Model -> Review -> Html Msg
 stateView model review =
+    let
+        sentence =
+            case review.translation.sentence of
+                Nothing ->
+                    ""
+
+                Just _ ->
+                    Maybe.withDefault "" review.translation.sentence
+    in
     case model.translationState of
         Nothing ->
             text ""
 
         Just True ->
-            text "Correct!!"
+            div []
+                [ div []
+                    [ text "Correct!!" ]
+                , div [ class "text-muted" ]
+                    [ text sentence ]
+                ]
 
         Just False ->
             div []
-                [ text "You are wrong! The correct word is: "
-                , text (fullWord review.word.article review.word.german)
+                [ div []
+                    [ text "You are wrong! The correct word is: "
+                    , text (fullWord review.word.article review.word.german)
+                    ]
+                , div [ class "text-muted" ]
+                    [ text sentence ]
                 ]
 
 
