@@ -120,7 +120,8 @@ view model state =
             , table [ class "table table-striped" ]
                 [ thead [ class "thead-dark" ]
                     [ tr []
-                        [ th [ scope "col" ] [ text "GERMAN", sortView ]
+                        [ th [ scope "col" ] []
+                        , th [ scope "col" ] [ text "GERMAN", sortView ]
                         , th [ scope "col", class "text-center" ] [ text "TYPE" ]
                         , th [ scope "col", class "text-center" ] [ text "LEVEL" ]
                         , th [ scope "col", class "text-center" ] [ text "REVIEWS" ]
@@ -182,9 +183,18 @@ rowView progresses word =
 
                 Just actualProgress ->
                     actualProgress.level
+
+        wordLevel =
+            case word.level of
+                Nothing ->
+                    ""
+
+                Just actualLevel ->
+                    String.fromInt actualLevel
     in
     tr []
-        [ td []
+        [ td [ class "text-center align-middle text-muted" ] [ text wordLevel ]
+        , td []
             [ div [ class "lead" ] [ wordView word ]
             , div [ class "text-muted" ] [ text sentence ]
             ]
@@ -268,6 +278,7 @@ searchView model state =
                 , option [ selected (state.filter.level == Just 2), value "2" ] [ text "2" ]
                 , option [ selected (state.filter.level == Just 3), value "3" ] [ text "3" ]
                 , option [ selected (state.filter.level == Just 4), value "4" ] [ text "4" ]
+                , option [ selected (state.filter.level == Just 5), value "5" ] [ text "5" ]
                 ]
             ]
         , div [ class "form-group position-relative" ]
