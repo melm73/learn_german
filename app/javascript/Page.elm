@@ -2,6 +2,7 @@ module Page exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
+import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
@@ -68,6 +69,7 @@ init flags url key =
             { user = flags.user
             , urls = flags.urls
             , words = []
+            , progresses = Dict.empty
             , filteredWords = []
             , filter = State.initialFilter
             , currentWordId = ""
@@ -146,11 +148,17 @@ update msg model =
                     ProgressPage.update subMsg pageModel
             in
             case subMsg of
+                ProgressPage.HandleProgressResponse (Ok progresses) ->
+                    ( { model | state = State.setProgresses model.state progresses }, Cmd.map ProgressMsg subCmd )
+
                 ProgressPage.SearchStringChanged searchText ->
                     ( { model | page = ProgressPage subModel, state = State.setFilterSearchText model.state searchText }, Cmd.map ProgressMsg subCmd )
 
                 ProgressPage.ClearSearchText ->
                     ( { model | page = ProgressPage subModel, state = State.clearFilterSearchText model.state }, Cmd.map ProgressMsg subCmd )
+
+                ProgressPage.SelectTranslatedOption option ->
+                    ( { model | page = ProgressPage subModel, state = State.setFilterTranslated model.state option }, Cmd.map ProgressMsg subCmd )
 
                 ProgressPage.SelectLevelOption option ->
                     ( { model | page = ProgressPage subModel, state = State.setFilterLevel model.state option }, Cmd.map ProgressMsg subCmd )

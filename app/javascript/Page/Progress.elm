@@ -9,7 +9,7 @@ import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as Decoder
 import ProgressPieChart
-import State exposing (AppState)
+import State exposing (AppState, Progress)
 
 
 
@@ -17,24 +17,12 @@ import State exposing (AppState)
 
 
 type alias Model =
-    { progresses : Dict String Progress
-    }
-
-
-type alias Progress =
-    { wordId : String
-    , translated : Bool
-    , sentence : Maybe String
-    , level : Int
-    , timesReviewed : Int
-    , lastReviewed : Maybe String
-    , learnt : Bool
-    }
+    {}
 
 
 init : AppState -> ( Model, Cmd Msg )
 init state =
-    ( { progresses = Dict.empty }
+    ( {}
     , getProgressRequest state
     )
 
@@ -47,6 +35,7 @@ type Msg
     = HandleProgressResponse (Result Http.Error (List Progress))
     | SearchStringChanged String
     | ClearSearchText
+    | SelectTranslatedOption String
     | SelectLevelOption String
     | PaginationClicked State.PaginationDirection
 
@@ -55,9 +44,13 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         HandleProgressResponse (Ok progresses) ->
-            ( { progresses = progressToDict progresses }, Cmd.none )
+            ( model, Cmd.none )
 
         HandleProgressResponse (Err error) ->
+            let
+                _ =
+                    Debug.log "GET progresses error" error
+            in
             ( model, Cmd.none )
 
         SearchStringChanged _ ->
@@ -67,6 +60,9 @@ update msg model =
             ( model, Cmd.none )
 
         SelectLevelOption _ ->
+            ( model, Cmd.none )
+
+        SelectTranslatedOption _ ->
             ( model, Cmd.none )
 
         PaginationClicked _ ->
@@ -114,8 +110,8 @@ view model state =
             [ div [ class "row align-items-center" ]
                 [ div [ class "col-sm-4" ] [ h1 [] [ text "Progress" ] ] ]
             , div [ class "row" ]
-                [ div [ class "col-sm-6" ] [ paginationView model state ]
-                , div [ class "col-sm-6" ] [ searchView model state ]
+                [ div [ class "col-sm-5" ] [ paginationView model state ]
+                , div [ class "col-sm-7" ] [ searchView model state ]
                 ]
             , table [ class "table table-striped" ]
                 [ thead [ class "thead-dark" ]
@@ -127,7 +123,7 @@ view model state =
                         , th [ scope "col", class "text-center" ] [ text "REVIEWS" ]
                         ]
                     ]
-                , tbody [] (List.map (rowView model.progresses) (paginated state state.filteredWords))
+                , tbody [] (List.map (rowView state.progresses) (paginated state state.filteredWords))
                 ]
             ]
         , div [ class "col-lg-3" ]
@@ -271,6 +267,14 @@ searchView : Model -> AppState -> Html Msg
 searchView model state =
     form [ class "search-form form-inline float-lg-right" ]
         [ div [ class "form-group pr-3" ]
+            [ label [ class "pr-2" ] [ text "Translated?" ]
+            , select [ class "form-control", onInput SelectTranslatedOption ]
+                [ option [ selected (state.filter.translated == Nothing), value "Any" ] [ text "Any" ]
+                , option [ selected (state.filter.translated == Just True), value "Yes" ] [ text "Yes" ]
+                , option [ selected (state.filter.translated == Just False), value "No" ] [ text "No" ]
+                ]
+            ]
+        , div [ class "form-group pr-3" ]
             [ label [ class "pr-2" ] [ text "Level" ]
             , select [ class "form-control", onInput SelectLevelOption ]
                 [ option [ selected (state.filter.level == Nothing), value "Any" ] [ text "Any" ]
@@ -366,7 +370,7 @@ progressStats : Model -> AppState -> ProgressPieChart.Stats
 progressStats model state =
     let
         filteredProgresses =
-            Dict.filter (\wordId -> \progress -> List.any (\word -> word.id == wordId) state.filteredWords) model.progresses
+            Dict.filter (\wordId -> \progress -> List.any (\word -> word.id == wordId) state.filteredWords) state.progresses
 
         totalCount =
             List.length state.filteredWords
