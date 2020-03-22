@@ -157,6 +157,9 @@ update msg model =
                 ProgressPage.ClearSearchText ->
                     ( { model | page = ProgressPage subModel, state = State.clearFilterSearchText model.state }, Cmd.map ProgressMsg subCmd )
 
+                ProgressPage.SelectLearntOption option ->
+                    ( { model | page = ProgressPage subModel, state = State.setFilterLearnt model.state option }, Cmd.map ProgressMsg subCmd )
+
                 ProgressPage.SelectTranslatedOption option ->
                     ( { model | page = ProgressPage subModel, state = State.setFilterTranslated model.state option }, Cmd.map ProgressMsg subCmd )
 

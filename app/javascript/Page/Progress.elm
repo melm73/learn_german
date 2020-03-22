@@ -35,6 +35,7 @@ type Msg
     = HandleProgressResponse (Result Http.Error (List Progress))
     | SearchStringChanged String
     | ClearSearchText
+    | SelectLearntOption String
     | SelectTranslatedOption String
     | SelectLevelOption String
     | PaginationClicked State.PaginationDirection
@@ -43,9 +44,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        HandleProgressResponse (Ok progresses) ->
-            ( model, Cmd.none )
-
         HandleProgressResponse (Err error) ->
             let
                 _ =
@@ -53,19 +51,7 @@ update msg model =
             in
             ( model, Cmd.none )
 
-        SearchStringChanged _ ->
-            ( model, Cmd.none )
-
-        ClearSearchText ->
-            ( model, Cmd.none )
-
-        SelectLevelOption _ ->
-            ( model, Cmd.none )
-
-        SelectTranslatedOption _ ->
-            ( model, Cmd.none )
-
-        PaginationClicked _ ->
+        _ ->
             ( model, Cmd.none )
 
 
@@ -110,8 +96,8 @@ view model state =
             [ div [ class "row align-items-center" ]
                 [ div [ class "col-sm-4" ] [ h1 [] [ text "Progress" ] ] ]
             , div [ class "row" ]
-                [ div [ class "col-sm-5" ] [ paginationView model state ]
-                , div [ class "col-sm-7" ] [ searchView model state ]
+                [ div [ class "col-sm-4" ] [ paginationView model state ]
+                , div [ class "col-sm-8" ] [ searchView model state ]
                 ]
             , table [ class "table table-striped" ]
                 [ thead [ class "thead-dark" ]
@@ -266,16 +252,24 @@ crossChar =
 searchView : Model -> AppState -> Html Msg
 searchView model state =
     form [ class "search-form form-inline float-lg-right" ]
-        [ div [ class "form-group pr-3" ]
-            [ label [ class "pr-2" ] [ text "Translated?" ]
+        [ div [ class "form-group pr-2" ]
+            [ label [ class "pr-1" ] [ text "Learnt?" ]
+            , select [ class "form-control", onInput SelectLearntOption ]
+                [ option [ selected (state.filter.learnt == Nothing), value "Any" ] [ text "Any" ]
+                , option [ selected (state.filter.learnt == Just True), value "Yes" ] [ text "Yes" ]
+                , option [ selected (state.filter.learnt == Just False), value "No" ] [ text "No" ]
+                ]
+            ]
+        , div [ class "form-group pr-2" ]
+            [ label [ class "pr-1" ] [ text "Translated?" ]
             , select [ class "form-control", onInput SelectTranslatedOption ]
                 [ option [ selected (state.filter.translated == Nothing), value "Any" ] [ text "Any" ]
                 , option [ selected (state.filter.translated == Just True), value "Yes" ] [ text "Yes" ]
                 , option [ selected (state.filter.translated == Just False), value "No" ] [ text "No" ]
                 ]
             ]
-        , div [ class "form-group pr-3" ]
-            [ label [ class "pr-2" ] [ text "Level" ]
+        , div [ class "form-group pr-2" ]
+            [ label [ class "pr-1" ] [ text "Level" ]
             , select [ class "form-control", onInput SelectLevelOption ]
                 [ option [ selected (state.filter.level == Nothing), value "Any" ] [ text "Any" ]
                 , option [ selected (state.filter.level == Just 1), value "1" ] [ text "1" ]

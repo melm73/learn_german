@@ -64,6 +64,7 @@ type alias Filter =
     , searchText : String
     , level : Maybe Int
     , translated : Maybe Bool
+    , learnt : Maybe Bool
     }
 
 
@@ -83,6 +84,7 @@ initialFilter =
     , searchText = ""
     , level = Nothing
     , translated = Nothing
+    , learnt = Nothing
     }
 
 
@@ -98,6 +100,7 @@ clearFilterSearchText state =
             , pageNo = 1
             , level = state.filter.level
             , translated = state.filter.translated
+            , learnt = state.filter.learnt
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -111,6 +114,7 @@ setFilterSearchText state searchText =
             , pageNo = 1
             , level = state.filter.level
             , translated = state.filter.translated
+            , learnt = state.filter.learnt
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -132,6 +136,7 @@ setFilterLevel state option =
             , pageNo = 1
             , level = selectedLevel
             , translated = state.filter.translated
+            , learnt = state.filter.learnt
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -159,6 +164,35 @@ setFilterTranslated state translated =
             , pageNo = state.filter.pageNo
             , level = state.filter.level
             , translated = translatedValue
+            , learnt = state.filter.learnt
+            }
+    in
+    { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
+
+
+setFilterLearnt : AppState -> String -> AppState
+setFilterLearnt state learnt =
+    let
+        learntValue =
+            case learnt of
+                "Any" ->
+                    Nothing
+
+                "Yes" ->
+                    Just True
+
+                "No" ->
+                    Just False
+
+                _ ->
+                    Nothing
+
+        newFilter =
+            { searchText = state.filter.searchText
+            , pageNo = state.filter.pageNo
+            , level = state.filter.level
+            , translated = state.filter.translated
+            , learnt = learntValue
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -217,6 +251,7 @@ setPagination state direction =
             , pageNo = newPageNo
             , level = state.filter.level
             , translated = state.filter.translated
+            , learnt = state.filter.learnt
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -250,13 +285,21 @@ filteredWords filter words progresses =
 
                 Just translated ->
                     List.filter (isTranslated translated progresses) levelWords
+
+        learntWords =
+            case filter.learnt of
+                Nothing ->
+                    translatedWords
+
+                Just learnt ->
+                    List.filter (isLearnt learnt progresses) translatedWords
     in
     case filter.searchText of
         "" ->
-            translatedWords
+            learntWords
 
         searchString ->
-            List.filter (containsSearchString searchString) translatedWords
+            List.filter (containsSearchString searchString) learntWords
 
 
 isInLevel : Int -> Word -> Bool
@@ -281,6 +324,20 @@ isTranslated translated progresses word =
 
         Just _ ->
             translated
+
+
+isLearnt : Bool -> Dict String Progress -> Word -> Bool
+isLearnt learnt progresses word =
+    let
+        progress =
+            Dict.get word.id progresses
+    in
+    case progress of
+        Nothing ->
+            False
+
+        Just actualProgress ->
+            actualProgress.learnt == learnt
 
 
 containsSearchString : String -> Word -> Bool
