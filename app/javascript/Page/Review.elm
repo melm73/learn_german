@@ -76,7 +76,7 @@ type alias TranslationResult =
 init : AppState -> ( Model, Cmd Msg )
 init state =
     ( { reviewState = SelectingOptions
-      , reviewLevel = state.filter.level
+      , reviewLevel = state.filter.duolingoLevel
       , reviewCount = 10
       , remainingReviews = []
       , currentReview = Nothing

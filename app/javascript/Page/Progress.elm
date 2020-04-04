@@ -167,7 +167,7 @@ rowView progresses word =
                     actualProgress.level
 
         wordLevel =
-            case word.level of
+            case word.duolingoLevel of
                 Nothing ->
                     ""
 
@@ -271,12 +271,12 @@ searchView model state =
         , div [ class "form-group pr-2" ]
             [ label [ class "pr-1" ] [ text "Level" ]
             , select [ class "form-control", onInput SelectLevelOption ]
-                [ option [ selected (state.filter.level == Nothing), value "Any" ] [ text "Any" ]
-                , option [ selected (state.filter.level == Just 1), value "1" ] [ text "1" ]
-                , option [ selected (state.filter.level == Just 2), value "2" ] [ text "2" ]
-                , option [ selected (state.filter.level == Just 3), value "3" ] [ text "3" ]
-                , option [ selected (state.filter.level == Just 4), value "4" ] [ text "4" ]
-                , option [ selected (state.filter.level == Just 5), value "5" ] [ text "5" ]
+                [ option [ selected (state.filter.duolingoLevel == Nothing), value "Any" ] [ text "Any" ]
+                , option [ selected (state.filter.duolingoLevel == Just 1), value "1" ] [ text "1" ]
+                , option [ selected (state.filter.duolingoLevel == Just 2), value "2" ] [ text "2" ]
+                , option [ selected (state.filter.duolingoLevel == Just 3), value "3" ] [ text "3" ]
+                , option [ selected (state.filter.duolingoLevel == Just 4), value "4" ] [ text "4" ]
+                , option [ selected (state.filter.duolingoLevel == Just 5), value "5" ] [ text "5" ]
                 ]
             ]
         , div [ class "form-group position-relative" ]

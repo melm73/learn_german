@@ -18,7 +18,8 @@ class WordsController < ApplicationController
       article: word.article,
       category: word.category,
       plural: word.plural,
-      level: word.duolingo_level,
+      duolingoLevel: word.duolingo_level,
+      goetheLevel: word.goethe_level,
     }
   end
 end

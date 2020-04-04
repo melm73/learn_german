@@ -8,8 +8,8 @@ CSV.read("db/words.csv", headers: true, header_converters: :symbol).each do |wor
       article: word[:article], 
       plural: word[:plural], 
       category: word[:category],
-      chapter: word[:chapter],
-      duolingo_level: word[:duolingo].nil? ? nil : word[:duolingo].to_i
+      duolingo_level: word[:duolingo_level].nil? ? nil : word[:duolingo_level].to_i,
+      goethe_level: word[:goethe_level],
     }
     found_word.update(attrs)
     found_word.save
@@ -19,8 +19,8 @@ CSV.read("db/words.csv", headers: true, header_converters: :symbol).each do |wor
       article: word[:article], 
       plural: word[:plural], 
       category: word[:category],
-      chapter: word[:chapter],
-      duolingo_level: word[:duolingo].nil? ? nil : word[:duolingo].to_i
+      duolingo_level: word[:duolingo_level].nil? ? nil : word[:duolingo_level].to_i,
+      goethe_level: word[:goethe_level],
     )
   end
 end

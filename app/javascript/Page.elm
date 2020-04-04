@@ -253,13 +253,14 @@ getWordsRequest state =
 
 wordDecoder : Decoder.Decoder State.Word
 wordDecoder =
-    Decoder.map6 State.Word
+    Decoder.map7 State.Word
         (Decoder.field "id" Decoder.string)
         (Decoder.field "german" Decoder.string)
         (Decoder.field "article" (Decoder.nullable Decoder.string))
         (Decoder.field "category" Decoder.string)
         (Decoder.field "plural" (Decoder.nullable Decoder.string))
-        (Decoder.field "level" (Decoder.nullable Decoder.int))
+        (Decoder.field "duolingoLevel" (Decoder.nullable Decoder.int))
+        (Decoder.field "goetheLevel" (Decoder.nullable Decoder.string))
 
 
 logoutRequest : AppState -> Cmd Msg

@@ -44,7 +44,8 @@ type alias Word =
     , article : Maybe String
     , category : String
     , plural : Maybe String
-    , level : Maybe Int
+    , duolingoLevel : Maybe Int
+    , goetheLevel : Maybe String
     }
 
 
@@ -62,7 +63,8 @@ type alias Progress =
 type alias Filter =
     { pageNo : Int
     , searchText : String
-    , level : Maybe Int
+    , duolingoLevel : Maybe Int
+    , goetheLevel : Maybe Int
     , translated : Maybe Bool
     , learnt : Maybe Bool
     }
@@ -82,7 +84,8 @@ type PaginationDirection
 initialFilter =
     { pageNo = 1
     , searchText = ""
-    , level = Nothing
+    , duolingoLevel = Nothing
+    , goetheLevel = Nothing
     , translated = Nothing
     , learnt = Nothing
     }
@@ -98,7 +101,8 @@ clearFilterSearchText state =
         newFilter =
             { searchText = ""
             , pageNo = 1
-            , level = state.filter.level
+            , duolingoLevel = state.filter.duolingoLevel
+            , goetheLevel = state.filter.goetheLevel
             , translated = state.filter.translated
             , learnt = state.filter.learnt
             }
@@ -112,7 +116,8 @@ setFilterSearchText state searchText =
         newFilter =
             { searchText = searchText
             , pageNo = 1
-            , level = state.filter.level
+            , duolingoLevel = state.filter.duolingoLevel
+            , goetheLevel = state.filter.goetheLevel
             , translated = state.filter.translated
             , learnt = state.filter.learnt
             }
@@ -134,7 +139,8 @@ setFilterLevel state option =
         newFilter =
             { searchText = state.filter.searchText
             , pageNo = 1
-            , level = selectedLevel
+            , duolingoLevel = selectedLevel
+            , goetheLevel = state.filter.goetheLevel
             , translated = state.filter.translated
             , learnt = state.filter.learnt
             }
@@ -162,7 +168,8 @@ setFilterTranslated state translated =
         newFilter =
             { searchText = state.filter.searchText
             , pageNo = state.filter.pageNo
-            , level = state.filter.level
+            , duolingoLevel = state.filter.duolingoLevel
+            , goetheLevel = state.filter.goetheLevel
             , translated = translatedValue
             , learnt = state.filter.learnt
             }
@@ -190,7 +197,8 @@ setFilterLearnt state learnt =
         newFilter =
             { searchText = state.filter.searchText
             , pageNo = state.filter.pageNo
-            , level = state.filter.level
+            , duolingoLevel = state.filter.duolingoLevel
+            , goetheLevel = state.filter.goetheLevel
             , translated = state.filter.translated
             , learnt = learntValue
             }
@@ -249,7 +257,8 @@ setPagination state direction =
         newFilter =
             { searchText = state.filter.searchText
             , pageNo = newPageNo
-            , level = state.filter.level
+            , duolingoLevel = state.filter.duolingoLevel
+            , goetheLevel = state.filter.goetheLevel
             , translated = state.filter.translated
             , learnt = state.filter.learnt
             }
@@ -271,12 +280,12 @@ filteredWords : Filter -> List Word -> Dict String Progress -> List Word
 filteredWords filter words progresses =
     let
         levelWords =
-            case filter.level of
+            case filter.duolingoLevel of
                 Nothing ->
                     words
 
-                Just level ->
-                    List.filter (isInLevel level) words
+                Just duolingoLevel ->
+                    List.filter (isInLevel duolingoLevel) words
 
         translatedWords =
             case filter.translated of
@@ -304,7 +313,7 @@ filteredWords filter words progresses =
 
 isInLevel : Int -> Word -> Bool
 isInLevel level word =
-    case word.level of
+    case word.duolingoLevel of
         Nothing ->
             False
 
