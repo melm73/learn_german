@@ -90,6 +90,10 @@ a.link, .display-4, .navbar-brand span {
   display: flex;
 }
 
+.search-text .form-control {
+  width: 150px;
+}
+
 .lead a {
   color: black;
 }

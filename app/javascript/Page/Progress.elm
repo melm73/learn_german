@@ -4,7 +4,7 @@ import Array
 import Dict exposing (Dict)
 import Functions exposing (fullWord)
 import Html exposing (Html, a, button, div, form, h1, input, label, li, nav, option, select, span, table, tbody, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class, classList, href, placeholder, scope, selected, type_, value)
+import Html.Attributes exposing (class, classList, disabled, href, placeholder, scope, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as Decoder
@@ -272,14 +272,17 @@ searchView model state =
             [ label [ class "pr-1" ] [ text "Level" ]
             , select [ class "form-control", onInput SelectLevelOption ]
                 [ option [ selected (state.filter.duolingoLevel == Nothing), value "Any" ] [ text "Any" ]
+                , option [ disabled True ] [ text "Duo" ]
                 , option [ selected (state.filter.duolingoLevel == Just 1), value "1" ] [ text "1" ]
                 , option [ selected (state.filter.duolingoLevel == Just 2), value "2" ] [ text "2" ]
                 , option [ selected (state.filter.duolingoLevel == Just 3), value "3" ] [ text "3" ]
                 , option [ selected (state.filter.duolingoLevel == Just 4), value "4" ] [ text "4" ]
                 , option [ selected (state.filter.duolingoLevel == Just 5), value "5" ] [ text "5" ]
+                , option [ disabled True ] [ text "Goethe" ]
+                , option [ selected (state.filter.goetheLevel == Just "A1"), value "A1" ] [ text "A1" ]
                 ]
             ]
-        , div [ class "form-group position-relative" ]
+        , div [ class "form-group position-relative search-text" ]
             [ input
                 [ type_ "text"
                 , class "form-control"

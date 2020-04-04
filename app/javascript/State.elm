@@ -64,7 +64,7 @@ type alias Filter =
     { pageNo : Int
     , searchText : String
     , duolingoLevel : Maybe Int
-    , goetheLevel : Maybe Int
+    , goetheLevel : Maybe String
     , translated : Maybe Bool
     , learnt : Maybe Bool
     }
@@ -98,13 +98,13 @@ initialFilter =
 clearFilterSearchText : AppState -> AppState
 clearFilterSearchText state =
     let
+        currentFilter =
+            state.filter
+
         newFilter =
-            { searchText = ""
-            , pageNo = 1
-            , duolingoLevel = state.filter.duolingoLevel
-            , goetheLevel = state.filter.goetheLevel
-            , translated = state.filter.translated
-            , learnt = state.filter.learnt
+            { currentFilter
+                | searchText = ""
+                , pageNo = 1
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -113,13 +113,13 @@ clearFilterSearchText state =
 setFilterSearchText : AppState -> String -> AppState
 setFilterSearchText state searchText =
     let
+        currentFilter =
+            state.filter
+
         newFilter =
-            { searchText = searchText
-            , pageNo = 1
-            , duolingoLevel = state.filter.duolingoLevel
-            , goetheLevel = state.filter.goetheLevel
-            , translated = state.filter.translated
-            , learnt = state.filter.learnt
+            { currentFilter
+                | searchText = searchText
+                , pageNo = 1
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -128,21 +128,25 @@ setFilterSearchText state searchText =
 setFilterLevel : AppState -> String -> AppState
 setFilterLevel state option =
     let
-        selectedLevel =
+        ( duolingoLevel, goetheLevel ) =
             case option of
                 "Any" ->
-                    Nothing
+                    ( Nothing, Nothing )
+
+                "A1" ->
+                    ( Nothing, Just "A1" )
 
                 _ ->
-                    String.toInt (Maybe.withDefault "0" (Just option))
+                    ( String.toInt (Maybe.withDefault "0" (Just option)), Nothing )
+
+        currentFilter =
+            state.filter
 
         newFilter =
-            { searchText = state.filter.searchText
-            , pageNo = 1
-            , duolingoLevel = selectedLevel
-            , goetheLevel = state.filter.goetheLevel
-            , translated = state.filter.translated
-            , learnt = state.filter.learnt
+            { currentFilter
+                | pageNo = 1
+                , duolingoLevel = duolingoLevel
+                , goetheLevel = goetheLevel
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -165,13 +169,12 @@ setFilterTranslated state translated =
                 _ ->
                     Nothing
 
+        currentFilter =
+            state.filter
+
         newFilter =
-            { searchText = state.filter.searchText
-            , pageNo = state.filter.pageNo
-            , duolingoLevel = state.filter.duolingoLevel
-            , goetheLevel = state.filter.goetheLevel
-            , translated = translatedValue
-            , learnt = state.filter.learnt
+            { currentFilter
+                | translated = translatedValue
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -194,13 +197,12 @@ setFilterLearnt state learnt =
                 _ ->
                     Nothing
 
+        currentFilter =
+            state.filter
+
         newFilter =
-            { searchText = state.filter.searchText
-            , pageNo = state.filter.pageNo
-            , duolingoLevel = state.filter.duolingoLevel
-            , goetheLevel = state.filter.goetheLevel
-            , translated = state.filter.translated
-            , learnt = learntValue
+            { currentFilter
+                | learnt = learntValue
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -254,13 +256,12 @@ setPagination state direction =
                 Last ->
                     numberOfPages state
 
+        currentFilter =
+            state.filter
+
         newFilter =
-            { searchText = state.filter.searchText
-            , pageNo = newPageNo
-            , duolingoLevel = state.filter.duolingoLevel
-            , goetheLevel = state.filter.goetheLevel
-            , translated = state.filter.translated
-            , learnt = state.filter.learnt
+            { currentFilter
+                | pageNo = newPageNo
             }
     in
     { state | filter = newFilter, filteredWords = filteredWords newFilter state.words state.progresses }
@@ -279,21 +280,29 @@ numberOfPages state =
 filteredWords : Filter -> List Word -> Dict String Progress -> List Word
 filteredWords filter words progresses =
     let
-        levelWords =
+        duolingoLevelWords =
             case filter.duolingoLevel of
                 Nothing ->
                     words
 
                 Just duolingoLevel ->
-                    List.filter (isInLevel duolingoLevel) words
+                    List.filter (isInDuolingoLevel duolingoLevel) words
+
+        goetheLevelWords =
+            case filter.goetheLevel of
+                Nothing ->
+                    duolingoLevelWords
+
+                Just goetheLevel ->
+                    List.filter (isInGoetheLevel goetheLevel) duolingoLevelWords
 
         translatedWords =
             case filter.translated of
                 Nothing ->
-                    levelWords
+                    goetheLevelWords
 
                 Just translated ->
-                    List.filter (isTranslated translated progresses) levelWords
+                    List.filter (isTranslated translated progresses) goetheLevelWords
 
         learntWords =
             case filter.learnt of
@@ -311,9 +320,19 @@ filteredWords filter words progresses =
             List.filter (containsSearchString searchString) learntWords
 
 
-isInLevel : Int -> Word -> Bool
-isInLevel level word =
+isInDuolingoLevel : Int -> Word -> Bool
+isInDuolingoLevel level word =
     case word.duolingoLevel of
+        Nothing ->
+            False
+
+        Just wordLevel ->
+            wordLevel == level
+
+
+isInGoetheLevel : String -> Word -> Bool
+isInGoetheLevel level word =
+    case word.goetheLevel of
         Nothing ->
             False
 
