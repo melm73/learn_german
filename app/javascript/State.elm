@@ -362,7 +362,7 @@ isLearnt learnt progresses word =
     in
     case progress of
         Nothing ->
-            False
+            False == learnt
 
         Just actualProgress ->
             actualProgress.learnt == learnt
