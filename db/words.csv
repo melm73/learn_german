@@ -261,7 +261,7 @@ die,Enkelin,Enkelinnen,Noun,B1,3
 der,Erwachsene,Erwachsenen,Noun,A1,3
 das,Fahrzeug,Fahrzeuge,Noun,B1,3
 die,Familie,Familien,Noun,A1,3
-der,Fan,Fans,Noun,,3
+der,Fan,Fans,Noun,A2,3
 der,Feind,Feinde,Noun,,3
 das,Fenster,Fenster,Noun,A2,3
 das,Feuerzeug,Feuerzeuge,Noun,B1,3
@@ -491,7 +491,7 @@ das,Messer,Messer,Noun,A2,4
 das,Metall,,Noun,B1,4
 der,Meter,Meter,Noun,A1,4
 der,Mietwagen,,Noun,B2,4
-der,Mitarbeiter,Mitarbeiter,Noun,,4
+der,Mitarbeiter,Mitarbeiter,Noun,B2,4
 die,Mitarbeiterin,Mitarbeiterinnen,Noun,,4
 der,Mittag,Mittage,Noun,A1,4
 das,Mittagessen,,Noun,A2,4
@@ -524,7 +524,7 @@ der,Sand,,Noun,B1,4
 der,Schüler,Schüler,Noun,A1,4
 die,Schülerin,Schülerinnen,Noun,A2,4
 die,Schulter,Schultern,Noun,B1,4
-die,Sehenswürdigkeit,Sehenswürdigkeiten,Noun,,4
+die,Sehenswürdigkeit,Sehenswürdigkeiten,Noun,A1,4
 der,Senf,Senfe,Noun,B2,4
 der,Senior,Senioren,Noun,B2,4
 die,Seniorin,Seniorinnen,Noun,,4
@@ -790,7 +790,6 @@ der,Krankenwagen,Krankenwagen,Noun,B1,5
 die,Krankheit,Krankheiten,Noun,A2,5
 der,Leiter,Leitern,Noun,B1,5
 das,Medikament,Medikamente,Noun,A2,5
-das,Medikament,,Noun,A2,5
 die,Medizin,Medizinen,Noun,B1,5
 der,Mittwoch,,Noun,A1,5
 der,Montag,,Noun,A1,5
@@ -1769,7 +1768,6 @@ der,Backofen,,Noun,B1,
 der,Badesee,,Noun,B2,
 die,Badewanne,,Noun,B1,
 das,Bahnfahren,,Noun,B1,
-das,Bahnfahren,,Noun,B2,
 die,Bahnstation,,Noun,B2,
 der,Bahnsteig,,Noun,A1,
 das,Bakterium,,Noun,B2,
@@ -1777,7 +1775,6 @@ der,Ball,,Noun,A2,
 das,Ballett,,Noun,B1,
 die,Bananenkiste,,Noun,B1,
 die,Band,,Noun,A2,
-die,Band,,Noun,B2,
 der,Banküberfall,,Noun,B2,
 das,Bankkonto,,Noun,B1,
 die,Bankleitzahl,,Noun,B1,
@@ -1960,7 +1957,6 @@ der,Cornflake,,Noun,A2,
 die,Couch,,Noun,B1,
 die,Creme,,Noun,A2,
 die,Currywurst,Currywürste,Noun,B1,
-die,Currywurst,,Noun,B2,
 der,Döner,,Noun,B1,
 das,Dönerfleisch,,Noun,B2,
 der,Dönerimbiss,,Noun,B2,
@@ -2194,7 +2190,6 @@ der,Familienname,Familiennamen,Noun,A1,
 die,Familienplanung,,Noun,B2,
 der,Familienstand,,Noun,A1,
 der,Familienurlaub,,Noun,A2,
-der,Fan,,Noun,A2,
 der,Fangkorb,,Noun,B2,
 die,Fantasie,,Noun,B1,
 der,Fasching,,Noun,B2,
@@ -2322,7 +2317,6 @@ der,Gastmoderator,,Noun,B2,
 der,Gastronom,,Noun,B2,
 die,Gastronomie,,Noun,B2,
 das,Gebäck,,Noun,B1,
-das,Gebäude,,Noun,B1,
 die,Gebühr,,Noun,B1,
 das,Gebiet,,Noun,B1,
 das,Gebirge,,Noun,B1,
@@ -2687,7 +2681,6 @@ das,Klavier,,Noun,A2,
 der,Kleiderbügel,,Noun,B2,
 die,Kleinanzeige,,Noun,B2,
 das,Kleingeld,,Noun,B1,
-das,Kleingeld,,Noun,B2,
 die,Kleinigkeit,,Noun,B2,
 die,Kletterhalle,,Noun,B2,
 das,Klima,,Noun,B1,
@@ -2785,7 +2778,6 @@ der,Kulturkreis,,Noun,B2,
 der,Kulturschock,,Noun,B2,
 der,Kummer,,Noun,B2,
 der,Kumpel,,Noun,B2,
-die,Kunst,,Noun,,
 die,Kunst,,Noun,A2,
 die,Kunstgeschichte,,Noun,B2,
 der,Kunststoff,,Noun,B2,
@@ -2962,7 +2954,6 @@ das,Mineralwasser,,Noun,B1,
 die,Minute,Minuten,Noun,A1,
 die,Mischung,,Noun,B2,
 das,Missverständnis,,Noun,B2,
-der,Mitarbeiter,,Noun,B2,
 die,Mitbewohnerin,,Noun,B2,
 die,Mitfahrgelegenheit,,Noun,B2,
 die,Mittagspause,,Noun,A2,
@@ -3002,7 +2993,6 @@ der,Mut,,Noun,B1,
 die,Muttersprache,,Noun,B1,
 der,Muttersprachler,,Noun,B1,
 die,Nähe,,Noun,A2,
-der,Nachbar,,Noun,A2,
 die,Nachbarin,,Noun,A2,
 die,Nachdenklichkeit,,Noun,B2,
 die,Nachfolgerin,,Noun,B2,
@@ -3194,7 +3184,6 @@ der,Prozess,,Noun,B1,
 die,Psychologie,,Noun,B2,
 die,Psychotherapeutin,,Noun,B2,
 die,Publikation,,Noun,B1,
-die,Publikation,,Noun,B2,
 der,Pullover,,Noun,A2,
 der,Punk,,Noun,B2,
 der,Punkrock,,Noun,B2,
@@ -3417,7 +3406,6 @@ der,See,Seen,Noun,A1,
 der,Seeigel,,Noun,B2,
 die,Seele,,Noun,B2,
 das,Sehen,,Noun,A2,
-die,Sehenswürdigkeit,Sehenswürdigkeiten,Noun,A1,
 die,Sehnsucht,,Noun,B2,
 die,Seite,Seiten,Noun,A2,
 der,Sekretär,,Noun,B1,
@@ -4054,7 +4042,6 @@ die,Zwillingsschwester,,Noun,B2,
 ,meist-,,Prefix,A1,
 ,ab,,Preposition,A1,
 ,bisschen,,Pronoun,A1,
-,mehr,,Pronoun,A1,
 ,ähneln,,Verb,B2,
 ,ändern,,Verb,A2,
 ,ärgern,,Verb,A2,
@@ -4833,7 +4820,6 @@ die,Zwillingsschwester,,Noun,B2,
 ,subventionieren,,Verb,B2,
 ,suchen,,Verb,A1,
 ,surfen,,Verb,B2,
-,surfen,,Verb,,
 ,töten,,Verb,B2,
 ,tackern,,Verb,B2,
 ,tanken,,Verb,B1,
@@ -5004,8 +4990,7 @@ die,Zwillingsschwester,,Noun,B2,
 ,wegschmeißen,,Verb,B2,
 ,wegwerfen,,Verb,A2,
 ,wegziehen,,Verb,B2,
-,wehtun,,Verb,A2,
-,wehtun,,Verb,B1,
+,wehtun,,Verb,A1,
 ,weichen,,Verb,B2,
 ,weigern,,Verb,B1,
 ,weinen,,Verb,A2,

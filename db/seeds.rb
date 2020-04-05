@@ -1,13 +1,12 @@
 require 'csv'
 
 CSV.read("db/words.csv", headers: true, header_converters: :symbol).each do |word|
-  found_word = Word.find_by(german: word[:german])
+  found_word = Word.find_by(german: word[:german], category: word[:category])
 
   if found_word # update
     attrs = {
       article: word[:article], 
       plural: word[:plural], 
-      category: word[:category],
       duolingo_level: word[:duolingo_level].nil? ? nil : word[:duolingo_level].to_i,
       goethe_level: word[:goethe_level],
     }
